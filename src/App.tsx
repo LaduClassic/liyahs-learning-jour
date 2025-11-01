@@ -13,7 +13,7 @@ import { Subject, MathOperation, ProgressData, GameSession } from '@/lib/types'
 type Screen = 'home' | 'math' | 'science' | 'arabic' | 'coding'
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('home')
+  const [currentScreen, setCurrentScreen] = useState<Screen>('arabic')
   const [showProgress, setShowProgress] = useState(false)
   const [progressData, setProgressData] = useKV<ProgressData>('progress-data', {
     totalSessions: 0,

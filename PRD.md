@@ -13,11 +13,11 @@ This app features multiple learning sections with interactive games, progress tr
 ## Essential Features
 
 ### Subject Navigation
-- **Functionality**: Main navigation between Math, Science, Coding, and Arabic sections
-- **Purpose**: Allows student to choose their learning focus independently
-- **Trigger**: Clicking/tapping large subject cards on home screen
-- **Progression**: Home screen → Subject card tap → Topic selection screen → Game/activity
-- **Success criteria**: Child can navigate between subjects without parent assistance
+- **Functionality**: Main navigation between Math, Science, Coding, and Arabic sections (Arabic is the default initial screen)
+- **Purpose**: Allows student to choose their learning focus independently with Arabic learning front and center
+- **Trigger**: App opens to Arabic section by default; clicking/tapping "Subjects" button reveals navigation to other sections
+- **Progression**: Arabic section (initial) → Subjects button → Subject selector panel → Choose subject → Topic selection screen → Game/activity
+- **Success criteria**: App loads directly into Arabic section, child can navigate to other subjects via subject selector, and return to any section easily
 
 ### Math Section - Four Operations
 - **Functionality**: Subtraction, Addition, Multiplication, and Division practice through interactive games
