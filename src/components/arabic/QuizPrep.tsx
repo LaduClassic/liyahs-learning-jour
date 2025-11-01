@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 type PrepMode = 'flashcards' | 'letter-order' | 'phonetic-match' | 'definition-match' | 'write-it'
 
 export function QuizPrep() {
-  const [mode, setMode] = useState<PrepMode>('letter-order')
+  const [mode, setMode] = useState<PrepMode>('flashcards')
   const [wordIndex, setWordIndex] = useState(0)
 
   const modes: Array<{ id: PrepMode; label: string }> = [
