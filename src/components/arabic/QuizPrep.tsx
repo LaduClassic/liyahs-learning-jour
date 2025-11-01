@@ -44,10 +44,10 @@ export function QuizPrep() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex-1 flex justify-center">
-          <div className="inline-flex flex-wrap gap-2 p-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full shadow-lg">
+    <div className="flex flex-col gap-6 w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 w-full">
+        <div className="flex-1 flex justify-center w-full overflow-x-auto">
+          <div className="inline-flex flex-nowrap gap-2 p-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full shadow-lg">
             {modes.map(({ id, label }) => (
               <Button
                 key={id}
@@ -57,7 +57,7 @@ export function QuizPrep() {
                   setMode(id)
                   setWordIndex(0)
                 }}
-                className={`rounded-full font-bold ${
+                className={`rounded-full font-bold whitespace-nowrap text-xs sm:text-sm ${
                   mode === id ? 'shadow-lg' : ''
                 }`}
               >
@@ -66,10 +66,12 @@ export function QuizPrep() {
             ))}
           </div>
         </div>
-        <QuizUploader onWordsUpdated={handleWordsUpdated} />
+        <div className="flex justify-center sm:justify-end">
+          <QuizUploader onWordsUpdated={handleWordsUpdated} />
+        </div>
       </div>
 
-      <p className="text-xl md:text-2xl text-center text-muted-foreground">
+      <p className="text-lg sm:text-xl md:text-2xl text-center text-muted-foreground px-4">
         {descriptions[mode]}
       </p>
 
@@ -80,6 +82,7 @@ export function QuizPrep() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
+          className="w-full"
         >
           {mode === 'letter-order' && <LetterOrderMode wordIndex={wordIndex} setWordIndex={setWordIndex} />}
           {mode === 'phonetic-match' && <PhoneticMatchMode />}
@@ -138,55 +141,57 @@ function LetterOrderMode({ wordIndex, setWordIndex }: { wordIndex: number; setWo
   }
 
   return (
-    <Card className="p-8 space-y-6">
-      <p className="text-center text-xl text-muted-foreground">
-        Word {wordIndex + 1} — select the letters in order
-      </p>
+    <Card className="p-4 sm:p-6 md:p-8 w-full">
+      <div className="flex flex-col gap-6">
+        <p className="text-center text-base sm:text-lg md:text-xl text-muted-foreground">
+          Word {wordIndex + 1} — select the letters in order
+        </p>
 
-      <div className="flex flex-wrap gap-3 justify-center" dir="rtl">
-        {clusters.map((_, index) => (
-          <div
-            key={index}
-            className={`min-w-[64px] min-h-[72px] border-3 rounded-2xl p-3 flex items-center justify-center text-4xl ${
-              slots[index]
-                ? 'border-primary bg-card border-solid'
-                : 'border-dashed border-muted bg-muted/20'
-            }`}
-            style={{
-              fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
-            }}
-          >
-            {slots[index] || ''}
-          </div>
-        ))}
-      </div>
+        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center w-full" dir="rtl">
+          {clusters.map((_, index) => (
+            <div
+              key={index}
+              className={`w-14 h-16 sm:w-16 sm:h-20 md:min-w-[64px] md:min-h-[72px] border-2 rounded-xl sm:rounded-2xl p-2 sm:p-3 flex items-center justify-center text-2xl sm:text-3xl md:text-4xl ${
+                slots[index]
+                  ? 'border-primary bg-card border-solid'
+                  : 'border-dashed border-muted bg-muted/20'
+              }`}
+              style={{
+                fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
+              }}
+            >
+              {slots[index] || ''}
+            </div>
+          ))}
+        </div>
 
-      <div className="flex flex-wrap gap-3 justify-center" dir="rtl">
-        {shuffled.map((cluster, index) => (
-          <Button
-            key={index}
-            variant="outline"
-            size="lg"
-            onClick={() => handleTileClick(cluster, index)}
-            disabled={used.has(index)}
-            className={`min-w-[80px] h-auto py-4 text-4xl border-2 ${
-              used.has(index) ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            style={{
-              fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
-            }}
-          >
-            {cluster}
+        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center w-full" dir="rtl">
+          {shuffled.map((cluster, index) => (
+            <Button
+              key={index}
+              variant="outline"
+              size="lg"
+              onClick={() => handleTileClick(cluster, index)}
+              disabled={used.has(index)}
+              className={`min-w-[64px] sm:min-w-[80px] h-auto py-3 sm:py-4 text-2xl sm:text-3xl md:text-4xl border-2 ${
+                used.has(index) ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              style={{
+                fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
+              }}
+            >
+              {cluster}
+            </Button>
+          ))}
+        </div>
+
+        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
+          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev Word</Button>
+          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next Word</Button>
+          <Button variant="secondary" onClick={handleReset} className="flex-1 sm:flex-initial">
+            Reset
           </Button>
-        ))}
-      </div>
-
-      <div className="flex gap-3 justify-center flex-wrap">
-        <Button onClick={handlePrev}>Prev Word</Button>
-        <Button onClick={handleNext}>Next Word</Button>
-        <Button variant="secondary" onClick={handleReset}>
-          Reset
-        </Button>
+        </div>
       </div>
     </Card>
   )
@@ -238,13 +243,13 @@ function PhoneticMatchMode() {
   }
 
   return (
-    <Card className="p-8">
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-3">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">
+    <Card className="p-4 sm:p-6 md:p-8 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="flex flex-col gap-3 w-full">
+          <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
             Words
           </h3>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2 w-full">
             {SPELLING_WORDS.map((word, index) => (
               <Button
                 key={index}
@@ -252,7 +257,7 @@ function PhoneticMatchMode() {
                 size="lg"
                 onClick={() => handleLeftClick(index)}
                 disabled={matched.has(index)}
-                className={`w-full text-2xl h-auto py-4 ${
+                className={`w-full text-xl sm:text-2xl h-auto py-3 sm:py-4 ${
                   matched.has(index)
                     ? 'bg-success/20 border-success'
                     : selectedLeft === index
@@ -270,11 +275,11 @@ function PhoneticMatchMode() {
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">
+        <div className="flex flex-col gap-3 w-full">
+          <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
             Phonetics
           </h3>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2 w-full">
             {rightOrder.map((originalIndex) => (
               <Button
                 key={originalIndex}
@@ -282,7 +287,7 @@ function PhoneticMatchMode() {
                 size="lg"
                 onClick={() => handleRightClick(originalIndex)}
                 disabled={matched.has(originalIndex)}
-                className={`w-full text-xl h-auto py-4 font-mono ${
+                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 font-mono ${
                   matched.has(originalIndex)
                     ? 'bg-success/20 border-success'
                     : selectedRight === originalIndex
@@ -346,13 +351,13 @@ function DefinitionMatchMode() {
   }
 
   return (
-    <Card className="p-8">
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-3">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">
+    <Card className="p-4 sm:p-6 md:p-8 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="flex flex-col gap-3 w-full">
+          <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
             Arabic
           </h3>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2 w-full">
             {SPELLING_WORDS.map((word, index) => (
               <Button
                 key={index}
@@ -360,7 +365,7 @@ function DefinitionMatchMode() {
                 size="lg"
                 onClick={() => handleLeftClick(index)}
                 disabled={matched.has(index)}
-                className={`w-full text-2xl h-auto py-4 ${
+                className={`w-full text-xl sm:text-2xl h-auto py-3 sm:py-4 ${
                   matched.has(index)
                     ? 'bg-success/20 border-success'
                     : selectedLeft === index
@@ -378,11 +383,11 @@ function DefinitionMatchMode() {
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">
+        <div className="flex flex-col gap-3 w-full">
+          <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
             Definition
           </h3>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2 w-full">
             {rightOrder.map((originalIndex) => (
               <Button
                 key={originalIndex}
@@ -390,7 +395,7 @@ function DefinitionMatchMode() {
                 size="lg"
                 onClick={() => handleRightClick(originalIndex)}
                 disabled={matched.has(originalIndex)}
-                className={`w-full text-xl h-auto py-4 ${
+                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 ${
                   matched.has(originalIndex)
                     ? 'bg-success/20 border-success'
                     : selectedRight === originalIndex
@@ -411,6 +416,7 @@ function DefinitionMatchMode() {
 function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
   const word = SPELLING_WORDS[wordIndex]
   const [input, setInput] = useState('')
+  const [showTrace, setShowTrace] = useState(true)
 
   const checkAnswer = () => {
     const normalized = normalizeArabic(input)
@@ -423,80 +429,98 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
   const handlePrev = () => {
     setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
     setInput('')
+    setShowTrace(true)
   }
 
   const handleNext = () => {
     setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
     setInput('')
+    setShowTrace(true)
   }
 
   return (
-    <Card className="p-8 space-y-6">
-      <div className="space-y-4">
-        <p className="text-center text-xl font-mono text-primary font-bold">
-          {word.phonetic}
-        </p>
-        <p className="text-center text-lg text-muted-foreground">
-          {word.definition}
-        </p>
-      </div>
+    <Card className="p-4 sm:p-6 md:p-8 w-full">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <p className="text-center text-lg sm:text-xl font-mono text-primary font-bold">
+            {word.phonetic}
+          </p>
+          <p className="text-center text-base sm:text-lg text-muted-foreground">
+            {word.definition}
+          </p>
+        </div>
 
-      <div className="bg-muted/30 rounded-2xl p-6 space-y-4">
-        <p className="text-center text-sm text-muted-foreground uppercase tracking-wide font-semibold">
-          Trace the word
-        </p>
-        
-        <div 
-          className="relative flex justify-center items-center min-h-[120px] bg-background rounded-xl border-2 border-dashed border-primary/30 p-4"
-          dir="rtl"
-        >
-          <div
-            className="text-7xl select-none pointer-events-none"
-            style={{
-              fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
-              color: 'oklch(0.60 0.19 250 / 0.25)',
-              textShadow: '0 0 1px oklch(0.60 0.19 250 / 0.4)',
-              WebkitTextStroke: '1px oklch(0.60 0.19 250 / 0.3)'
-            }}
-          >
-            {word.arabic}
+        <div className="bg-muted/30 rounded-2xl p-4 sm:p-6 w-full">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <p className="text-center flex-1 text-xs sm:text-sm text-muted-foreground uppercase tracking-wide font-semibold">
+                Trace the word
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTrace(!showTrace)}
+                className="text-xs"
+              >
+                {showTrace ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+            
+            <div 
+              className="relative flex justify-center items-center min-h-[100px] sm:min-h-[120px] bg-background rounded-xl border-2 border-dashed border-primary/30 p-4 overflow-x-auto"
+              dir="rtl"
+            >
+              {showTrace && (
+                <div
+                  className="text-5xl sm:text-6xl md:text-7xl select-none pointer-events-none whitespace-nowrap"
+                  style={{
+                    fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+                    color: 'oklch(0.60 0.19 250 / 0.25)',
+                    textShadow: '0 0 1px oklch(0.60 0.19 250 / 0.4)',
+                    WebkitTextStroke: '1px oklch(0.60 0.19 250 / 0.3)'
+                  }}
+                >
+                  {word.arabic}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="space-y-4">
-        <p className="text-center text-sm text-muted-foreground uppercase tracking-wide font-semibold">
-          Now write it yourself
-        </p>
-        
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="اكتب الكلمة هنا"
-          dir="rtl"
-          className="w-full text-4xl p-6 border-2 border-input rounded-2xl bg-background focus:outline-none focus:ring-2 focus:ring-ring text-center"
-          style={{
-            fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
-          }}
-        />
+        <div className="flex flex-col gap-4 w-full">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground uppercase tracking-wide font-semibold">
+            Now write it yourself
+          </p>
+          
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="اكتب الكلمة هنا"
+            dir="rtl"
+            className="w-full text-2xl sm:text-3xl md:text-4xl p-4 sm:p-6 border-2 border-input rounded-2xl bg-background focus:outline-none focus:ring-2 focus:ring-ring text-center"
+            style={{
+              fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
+            }}
+          />
 
-        {input && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`text-center text-xl font-bold ${
-              isCorrect ? 'text-success' : 'text-destructive'
-            }`}
-          >
-            {isCorrect ? 'Perfect! ✅' : 'Keep trying…'}
-          </motion.p>
-        )}
-      </div>
+          {input && (
+            <motion.p
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`text-center text-lg sm:text-xl font-bold ${
+                isCorrect ? 'text-success' : 'text-destructive'
+              }`}
+            >
+              {isCorrect ? 'Perfect! ✅' : 'Keep trying…'}
+            </motion.p>
+          )}
+        </div>
 
-      <div className="flex gap-3 justify-center flex-wrap">
-        <Button onClick={handlePrev}>Prev Word</Button>
-        <Button onClick={handleNext}>Next Word</Button>
+        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
+          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev Word</Button>
+          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next Word</Button>
+        </div>
       </div>
     </Card>
   )
@@ -517,35 +541,37 @@ function FlashcardsMode({ wordIndex, setWordIndex }: { wordIndex: number; setWor
   }
 
   return (
-    <Card className="p-12 space-y-8">
-      <div
-        className="text-7xl text-center"
-        style={{
-          fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
-          direction: 'rtl'
-        }}
-      >
-        {word.arabic}
-      </div>
+    <Card className="p-6 sm:p-8 md:p-12 w-full">
+      <div className="flex flex-col gap-6 sm:gap-8">
+        <div
+          className="text-5xl sm:text-6xl md:text-7xl text-center break-words"
+          style={{
+            fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+            direction: 'rtl'
+          }}
+        >
+          {word.arabic}
+        </div>
 
-      <div className="text-center space-y-4">
-        <Button variant="secondary" size="lg" onClick={() => setRevealed(!revealed)}>
-          {revealed ? 'Hide' : 'Show'} phonetics
-        </Button>
-        {revealed && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-mono text-primary"
-          >
-            {word.phonetic}
-          </motion.div>
-        )}
-      </div>
+        <div className="text-center flex flex-col gap-4">
+          <Button variant="secondary" size="lg" onClick={() => setRevealed(!revealed)} className="w-full sm:w-auto">
+            {revealed ? 'Hide' : 'Show'} phonetics
+          </Button>
+          {revealed && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xl sm:text-2xl font-mono text-primary"
+            >
+              {word.phonetic}
+            </motion.div>
+          )}
+        </div>
 
-      <div className="flex gap-3 justify-center flex-wrap">
-        <Button onClick={handlePrev}>Prev</Button>
-        <Button onClick={handleNext}>Next</Button>
+        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
+          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev</Button>
+          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next</Button>
+        </div>
       </div>
     </Card>
   )

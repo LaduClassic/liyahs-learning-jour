@@ -79,13 +79,13 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
   if (!currentLetter) return null
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm font-semibold text-primary uppercase tracking-wide">
+    <div className="flex flex-col gap-6 w-full">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+        <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide">
           Question
         </span>
 
-        <div className="flex gap-2 p-1.5 bg-muted/50 rounded-full">
+        <div className="flex gap-2 p-1.5 bg-muted/50 rounded-full w-full sm:w-auto justify-center">
           <Button
             variant={mode === 'form-to-name' ? 'default' : 'ghost'}
             size="sm"
@@ -95,7 +95,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
               setTotal(0)
               generateQuestion()
             }}
-            className="rounded-full"
+            className="rounded-full text-xs sm:text-sm flex-1 sm:flex-initial"
           >
             Form → Name
           </Button>
@@ -108,16 +108,16 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
               setTotal(0)
               generateQuestion()
             }}
-            className="rounded-full"
+            className="rounded-full text-xs sm:text-sm flex-1 sm:flex-initial"
           >
             Name → Form
           </Button>
         </div>
 
-        <div className="flex-1" />
+        <div className="hidden sm:block flex-1" />
       </div>
 
-      <Card className="p-8">
+      <Card className="p-4 sm:p-6 md:p-8 w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentLetter.name}-${currentForm}`}
@@ -129,7 +129,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
             {mode === 'form-to-name' ? (
               <>
                 <div
-                  className="text-8xl md:text-9xl text-center font-arabic"
+                  className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-center font-arabic"
                   style={{
                     fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
                     direction: 'rtl'
@@ -137,11 +137,11 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                 >
                   {currentLetter.forms[currentForm]}
                 </div>
-                <div className="text-xl md:text-2xl text-primary text-center">
+                <div className="text-lg sm:text-xl md:text-2xl text-primary text-center px-4">
                   Which letter is this <span className="font-semibold">{currentForm}</span> form?
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full mt-4">
                   {options.map((option) => {
                     const isCorrect = option.name === currentLetter.name
                     const showResult = answered
@@ -153,7 +153,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                         size="lg"
                         onClick={() => handleAnswer(option, isCorrect)}
                         disabled={answered}
-                        className={`h-auto py-4 text-lg ${
+                        className={`h-auto py-3 sm:py-4 text-base sm:text-lg ${
                           showResult && isCorrect
                             ? 'bg-success/20 border-success hover:bg-success/20'
                             : showResult && !isCorrect
@@ -169,14 +169,14 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
               </>
             ) : (
               <>
-                <div className="text-4xl md:text-5xl font-bold text-center">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-center">
                   {currentLetter.name}
                 </div>
-                <div className="text-xl md:text-2xl text-primary text-center">
+                <div className="text-lg sm:text-xl md:text-2xl text-primary text-center px-4">
                   Pick the <span className="font-semibold">{currentForm}</span> form
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full mt-4">
                   {(['beginning', 'middle', 'final'] as FormType[]).map((formType) => {
                     const isCorrect = formType === currentForm
                     const showResult = answered
@@ -193,7 +193,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                           )
                         }
                         disabled={answered}
-                        className={`h-auto py-6 flex flex-col gap-2 ${
+                        className={`h-auto py-4 sm:py-6 flex flex-col gap-2 ${
                           showResult && isCorrect
                             ? 'bg-success/20 border-success hover:bg-success/20'
                             : showResult && !isCorrect
@@ -202,7 +202,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                         }`}
                       >
                         <div
-                          className="text-5xl font-arabic"
+                          className="text-4xl sm:text-5xl font-arabic"
                           style={{
                             fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
                             direction: 'rtl'
@@ -210,7 +210,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                         >
                           {currentLetter.forms[formType]}
                         </div>
-                        <div className="text-sm text-muted-foreground capitalize">
+                        <div className="text-xs sm:text-sm text-muted-foreground capitalize">
                           {formType}
                         </div>
                       </Button>
@@ -223,14 +223,14 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
         </AnimatePresence>
       </Card>
 
-      <div className="flex items-center justify-center gap-4 flex-wrap">
-        <div className="px-6 py-3 bg-card rounded-full shadow-lg font-bold text-lg">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap">
+        <div className="px-4 sm:px-6 py-2 sm:py-3 bg-card rounded-full shadow-lg font-bold text-base sm:text-lg">
           {score} / {total}
         </div>
         <Button
           size="lg"
           onClick={handleNext}
-          className="gap-2 rounded-full shadow-lg"
+          className="gap-2 rounded-full shadow-lg w-full sm:w-auto"
         >
           Next
           <span>▶</span>
