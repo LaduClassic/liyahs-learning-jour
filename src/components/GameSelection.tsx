@@ -7,7 +7,7 @@ import { MathOperation, GameType } from '@/lib/types'
 interface GameSelectionProps {
   operation: MathOperation
   onSelectGame: (gameType: GameType) => void
-  onBack: () => void
+  onBack?: () => void
 }
 
 export function GameSelection({ operation, onSelectGame, onBack }: GameSelectionProps) {
@@ -54,25 +54,35 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
   )
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="w-full">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={onBack}
-            className="gap-2"
-          >
-            <ArrowLeft size={24} />
-            Back
-          </Button>
-          
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary">
-            {operationTitles[operation]}
-          </h2>
-          
-          <div className="w-24" />
-        </div>
+        {onBack && (
+          <div className="flex justify-between items-center mb-8">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={onBack}
+              className="gap-2"
+            >
+              <ArrowLeft size={24} />
+              Back
+            </Button>
+            
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary">
+              {operationTitles[operation]}
+            </h2>
+            
+            <div className="w-24" />
+          </div>
+        )}
+        
+        {!onBack && (
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary">
+              {operationTitles[operation]}
+            </h2>
+          </div>
+        )}
 
         <div className="mb-6 text-center">
           <p className="text-2xl text-muted-foreground">

@@ -126,7 +126,6 @@ export function MathSection({ onBack, onSessionComplete }: MathSectionProps) {
               <GameSelection
                 operation={operation}
                 onSelectGame={handleSelectGame}
-                onBack={onBack}
               />
             </TabsContent>
           ))}
