@@ -37,7 +37,7 @@ export function CodingSection({ onBack }: CodingSectionProps) {
       activity: 'robot' as CodingActivity
     },
     {
-      title: 'Sequence Builder',
+      title: 'Step Sorter',
       description: 'Put steps in the right order',
       icon: <Path weight="fill" size={48} />,
       color: 'oklch(0.65 0.20 200)',

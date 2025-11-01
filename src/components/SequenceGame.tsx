@@ -142,7 +142,7 @@ export function SequenceGame({ onBack }: SequenceGameProps) {
           </Button>
           
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: 'oklch(0.65 0.20 200)' }}>
-            Sequence Builder 🔢
+            Step Sorter 🔢
           </h2>
           
           <div className="w-24" />
