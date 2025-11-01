@@ -1,0 +1,66 @@
+import { Calculator, Flask, Book, ChartBar } from '@phosphor-icons/react'
+import { SubjectCard } from '@/components/SubjectCard'
+import { Button } from '@/components/ui/button'
+import { Subject } from '@/lib/types'
+
+interface HomeScreenProps {
+  onSelectSubject: (subject: Subject) => void
+  onShowProgress: () => void
+}
+
+export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps) {
+  return (
+    <div className="min-h-screen bg-background p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-5xl md:text-6xl font-bold text-primary mb-2">
+              Liyah's Journey
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground">
+              Choose your adventure! 🚀
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={onShowProgress}
+            className="gap-2"
+          >
+            <ChartBar size={24} />
+            <span className="hidden md:inline">Progress</span>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <SubjectCard
+            subject="math"
+            title="Math Fun"
+            icon={<Calculator weight="fill" />}
+            color="oklch(0.65 0.20 300)"
+            onClick={() => onSelectSubject('math')}
+            delay={0}
+          />
+          
+          <SubjectCard
+            subject="science"
+            title="Science Lab"
+            icon={<Flask weight="fill" />}
+            color="oklch(0.70 0.18 50)"
+            onClick={() => onSelectSubject('science')}
+            delay={0.1}
+          />
+          
+          <SubjectCard
+            subject="arabic"
+            title="Arabic Studies"
+            icon={<Book weight="fill" />}
+            color="oklch(0.68 0.16 30)"
+            onClick={() => onSelectSubject('arabic')}
+            delay={0.2}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
