@@ -1,8 +1,7 @@
-import { motion } from 'framer-motion'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Lightning, Cards, GridFour, BookOpen } from '@phosphor-icons/react'
 import { MathOperation, GameType } from '@/lib/types'
+import { ActivityGrid, ActivityCardData } from '@/components/ActivityGrid'
 
 interface GameSelectionProps {
   operation: MathOperation
@@ -18,45 +17,39 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
     division: 'Division'
   }
 
-  const games: Array<{
-    type: GameType
-    title: string
-    description: string
-    icon: React.ReactElement
-    color: string
-  }> = []
+  const activities: ActivityCardData[] = []
 
   if (operation === 'multiplication') {
-    games.push({
-      type: 'multiplication-chart' as GameType,
+    activities.push({
       title: 'Times Table Chart',
       description: 'Explore patterns by highlighting',
       icon: <GridFour weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 300)'
+      color: 'oklch(0.70 0.18 300)',
+      onClick: () => onSelectGame('multiplication-chart')
     })
   }
 
-  games.push(
+  activities.push(
     {
-      type: 'flashcards' as GameType,
       title: 'Flashcards',
       description: 'Practice at your own pace',
       icon: <Cards weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 200)'
+      color: 'oklch(0.70 0.18 200)',
+      onClick: () => onSelectGame('flashcards')
     },
     {
-      type: 'racing' as GameType,
       title: 'Speed Race',
       description: 'Answer as many as you can in 60 seconds!',
       icon: <Lightning weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 50)'
+      color: 'oklch(0.70 0.18 50)',
+      onClick: () => onSelectGame('racing')
     },
     {
-      type: 'word-problems' as GameType,
       title: 'Word Problems',
       description: 'Solve story-based math adventures!',
       icon: <BookOpen weight="fill" size={48} />,
-      color: 'oklch(0.65 0.20 280)'
+      color: 'oklch(0.65 0.20 280)',
+      onClick: () => onSelectGame('word-problems')
     }
   )
 
@@ -91,40 +84,10 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
           </div>
         )}
 
-        <div className="mb-6 text-center">
-          <p className="text-2xl text-muted-foreground">
-            Choose a game to play! 🎮
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {games.map((game, index) => (
-            <motion.div
-              key={game.type}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              whileHover={{ scale: 1.03, y: -4 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Card
-                className="cursor-pointer h-64 flex flex-col items-center justify-center gap-4 p-6 transition-shadow hover:shadow-2xl"
-                style={{ backgroundColor: game.color }}
-                onClick={() => onSelectGame(game.type)}
-              >
-                <div className="text-white">
-                  {game.icon}
-                </div>
-                <h3 className="text-2xl font-bold text-white text-center">
-                  {game.title}
-                </h3>
-                <p className="text-white/90 text-center text-lg">
-                  {game.description}
-                </p>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+        <ActivityGrid
+          activities={activities}
+          subtitle="Choose a game to play! 🎮"
+        />
       </div>
     </div>
   )

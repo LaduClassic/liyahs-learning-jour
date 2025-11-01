@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Plus, Minus, X, Divide } from '@phosphor-icons/react'
+import { Plus, Minus, X, Divide } from '@phosphor-icons/react'
 import { MathOperation, GameType } from '@/lib/types'
 import { GameSelection } from '@/components/GameSelection'
 import { FlashcardGame } from '@/components/FlashcardGame'
 import { RacingGame } from '@/components/RacingGame'
 import { MultiplicationChart } from '@/components/MultiplicationChart'
 import { WordProblemsGame } from '@/components/WordProblemsGame'
+import { SectionHeader } from '@/components/SectionHeader'
 
 interface MathSectionProps {
   onBack: () => void
@@ -23,10 +23,6 @@ export function MathSection({ onBack, onSessionComplete }: MathSectionProps) {
   }
 
   const handleBackToGames = () => {
-    setSelectedGame(null)
-  }
-
-  const handleBackToOperations = () => {
     setSelectedGame(null)
   }
 
@@ -69,36 +65,14 @@ export function MathSection({ onBack, onSessionComplete }: MathSectionProps) {
     )
   }
 
-  if (selectedGame) {
-    return (
-      <GameSelection
-        operation={selectedOperation}
-        onSelectGame={handleSelectGame}
-        onBack={handleBackToOperations}
-      />
-    )
-  }
-
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={onBack}
-            className="gap-2"
-          >
-            <ArrowLeft size={24} />
-            Home
-          </Button>
-          
-          <h2 className="text-4xl md:text-5xl font-bold text-secondary">
-            Math Fun 🧮
-          </h2>
-          
-          <div className="w-24" />
-        </div>
+        <SectionHeader
+          title="Math Fun"
+          emoji="🧮"
+          onBack={onBack}
+        />
 
         <Tabs value={selectedOperation} onValueChange={(value) => setSelectedOperation(value as MathOperation)}>
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto gap-2 bg-transparent">

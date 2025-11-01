@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -15,9 +15,10 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
   const [showReference, setShowReference] = useState(false)
   const [showSubjectSelector, setShowSubjectSelector] = useState(false)
 
-  useEffect(() => {
+  const handleSubjectClick = () => {
     setShowSubjectSelector(false)
-  }, [])
+    onBack()
+  }
 
   return (
     <div className="min-h-screen bg-background p-3 sm:p-4 md:p-8 w-full overflow-x-hidden">
@@ -30,8 +31,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
             className="gap-2 w-full sm:w-auto"
           >
             <House size={24} />
-            <span className="sm:hidden">Subjects</span>
-            <span className="hidden sm:inline">Subjects</span>
+            <span>Subjects</span>
           </Button>
           
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold flex-1 text-center" style={{ color: 'oklch(0.68 0.16 30)' }}>
@@ -45,8 +45,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
             className="gap-2 w-full sm:w-auto"
           >
             <Question size={24} weight="fill" />
-            <span className="sm:hidden">Help</span>
-            <span className="hidden sm:inline">Help</span>
+            <span>Help</span>
           </Button>
         </div>
 
@@ -57,7 +56,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={onBack}
+                onClick={handleSubjectClick}
                 className="h-auto flex flex-col gap-2 py-4 sm:py-6 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-purple-200"
               >
                 <NumberSquareOne size={32} className="sm:w-10 sm:h-10 text-purple-600" weight="fill" />
@@ -67,7 +66,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={onBack}
+                onClick={handleSubjectClick}
                 className="h-auto flex flex-col gap-2 py-4 sm:py-6 bg-gradient-to-br from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 border-green-200"
               >
                 <Flask size={32} className="sm:w-10 sm:h-10 text-green-600" weight="fill" />
@@ -87,7 +86,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={onBack}
+                onClick={handleSubjectClick}
                 className="h-auto flex flex-col gap-2 py-4 sm:py-6 bg-gradient-to-br from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 border-blue-200"
               >
                 <Code size={32} className="sm:w-10 sm:h-10 text-blue-600" weight="fill" />
