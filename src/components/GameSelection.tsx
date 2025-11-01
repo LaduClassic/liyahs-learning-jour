@@ -18,7 +18,25 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
     division: 'Division'
   }
 
-  const games = [
+  const games: Array<{
+    type: GameType
+    title: string
+    description: string
+    icon: React.ReactElement
+    color: string
+  }> = []
+
+  if (operation === 'multiplication') {
+    games.push({
+      type: 'multiplication-chart' as GameType,
+      title: 'Times Table Chart',
+      description: 'Explore patterns by highlighting',
+      icon: <GridFour weight="fill" size={48} />,
+      color: 'oklch(0.70 0.18 300)'
+    })
+  }
+
+  games.push(
     {
       type: 'flashcards' as GameType,
       title: 'Flashcards',
@@ -33,17 +51,7 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
       icon: <Lightning weight="fill" size={48} />,
       color: 'oklch(0.70 0.18 50)'
     }
-  ]
-
-  if (operation === 'multiplication') {
-    games.push({
-      type: 'multiplication-chart' as GameType,
-      title: 'Times Table Chart',
-      description: 'Explore patterns by highlighting',
-      icon: <GridFour weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 300)'
-    })
-  }
+  )
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">

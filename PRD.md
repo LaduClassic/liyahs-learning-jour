@@ -1,6 +1,6 @@
 # Liyah's Journey - Interactive Learning Platform
 
-An engaging educational platform for second-grade students featuring Arabic studies, Math practice, and Science exploration with progress tracking and encouraging feedback.
+An engaging educational platform for second-grade students featuring Math, Science, Coding, and Arabic studies with progress tracking and encouraging feedback.
 
 **Experience Qualities**:
 1. **Playful** - Bright colors, fun animations, and game-like interactions that make learning feel like play
@@ -13,7 +13,7 @@ This app features multiple learning sections with interactive games, progress tr
 ## Essential Features
 
 ### Subject Navigation
-- **Functionality**: Main navigation between Arabic, Math, and Science sections
+- **Functionality**: Main navigation between Math, Science, Coding, and Arabic sections
 - **Purpose**: Allows student to choose their learning focus independently
 - **Trigger**: Clicking/tapping large subject cards on home screen
 - **Progression**: Home screen → Subject card tap → Topic selection screen → Game/activity
@@ -27,11 +27,11 @@ This app features multiple learning sections with interactive games, progress tr
 - **Success criteria**: Student completes problems, receives immediate feedback, and can replay games
 
 ### Interactive Multiplication Chart
-- **Functionality**: Draggable highlighting on multiplication table with color selection
+- **Functionality**: Draggable highlighting on multiplication table with color selection - optimized for mobile with responsive cell sizing
 - **Purpose**: Visual pattern recognition and memorization aid for multiplication facts
-- **Trigger**: Selecting multiplication chart game in Math section
+- **Trigger**: Selecting multiplication chart game in Math section (now first option in multiplication games)
 - **Progression**: Open chart → Select color → Touch/drag finger across cells horizontally/diagonally → Cells highlight → Clear and repeat
-- **Success criteria**: Smooth drag interaction highlights cells accurately, multiple colors available, clear button resets chart
+- **Success criteria**: Smooth drag interaction highlights cells accurately on all screen sizes, multiple colors available, clear button resets chart, readable on mobile devices
 
 ### Math Games Collection
 - **Functionality**: Multiple game types per operation (flashcards, racing games, matching, word problems)
@@ -62,11 +62,27 @@ This app features multiple learning sections with interactive games, progress tr
 - **Success criteria**: Arabic content accessible with same navigation patterns as new sections
 
 ### Science Section
-- **Functionality**: Age-appropriate science topics with interactive activities
-- **Purpose**: Foster curiosity and introduce scientific concepts for second-grade level
+- **Functionality**: Interactive science activities including periodic table exploration, water cycle learning, and solar system discovery
+- **Purpose**: Foster curiosity and introduce scientific concepts for second-grade level through hands-on exploration
 - **Trigger**: Selecting Science from home screen
-- **Progression**: Science section → Topic selection → Interactive lesson/activity → Knowledge check → Encouraging feedback
-- **Success criteria**: Engaging visual content, simple experiments or observations, reinforces learning
+- **Progression**: Science section → Topic selection (Periodic Table/Water Cycle/Solar System) → Interactive lesson/activity → Knowledge discovery → Return to menu
+- **Success criteria**: 
+  - Periodic Table: Click any element to learn fun facts about it
+  - Water Cycle: Step-by-step animated explanation of evaporation, condensation, precipitation, and collection
+  - Solar System: Interactive planet exploration with size comparisons and fun facts
+  - All content presented with child-friendly language and engaging visuals
+
+### Coding Section
+- **Functionality**: Introduction to coding concepts through three interactive games teaching sequencing, patterns, and logical thinking
+- **Purpose**: Develop computational thinking and problem-solving skills without traditional coding syntax
+- **Trigger**: Selecting Coding from home screen
+- **Progression**: Coding section → Activity selection → Complete challenges → Receive feedback → Advance to next level
+- **Success criteria**:
+  - Robot Commands: Guide robot through grid using directional commands (up/down/left/right), avoid obstacles, reach goal in limited moves
+  - Sequence Builder: Arrange everyday activities in correct order (making sandwich, getting ready for school, etc.)
+  - Pattern Matcher: Identify and complete visual patterns using shapes and colors
+  - Progressive difficulty across multiple levels
+  - Immediate visual feedback and encouraging messages
 
 ## Edge Case Handling
 

@@ -6,10 +6,11 @@ import { HomeScreen } from '@/components/HomeScreen'
 import { MathSection } from '@/components/MathSection'
 import { ScienceSection } from '@/components/ScienceSection'
 import { ArabicSection } from '@/components/ArabicSection'
+import { CodingSection } from '@/components/CodingSection'
 import { ProgressDashboard } from '@/components/ProgressDashboard'
 import { Subject, MathOperation, ProgressData, GameSession } from '@/lib/types'
 
-type Screen = 'home' | 'math' | 'science' | 'arabic'
+type Screen = 'home' | 'math' | 'science' | 'arabic' | 'coding'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
@@ -38,7 +39,7 @@ function App() {
   })
 
   const handleSelectSubject = (subject: Subject) => {
-    setCurrentScreen(subject)
+    setCurrentScreen(subject as Screen)
   }
 
   const handleBackToHome = () => {
@@ -136,6 +137,10 @@ function App() {
 
       {currentScreen === 'science' && (
         <ScienceSection onBack={handleBackToHome} />
+      )}
+
+      {currentScreen === 'coding' && (
+        <CodingSection onBack={handleBackToHome} />
       )}
 
       {currentScreen === 'arabic' && (

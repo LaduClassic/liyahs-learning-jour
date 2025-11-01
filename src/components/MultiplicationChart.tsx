@@ -118,56 +118,58 @@ export function MultiplicationChart({ onBack }: MultiplicationChartProps) {
           </div>
         </div>
 
-        <Card className="p-4 md:p-6 overflow-x-auto">
-          <div
-            ref={chartRef}
-            className="inline-block select-none touch-none"
-            onPointerUp={handlePointerUp}
-            onPointerLeave={handlePointerUp}
-          >
-            <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(13, minmax(0, 1fr))' }}>
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-muted rounded flex items-center justify-center font-bold text-lg">
-                ×
-              </div>
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-                <div
-                  key={`header-${num}`}
-                  className="w-12 h-12 md:w-16 md:h-16 bg-primary text-primary-foreground rounded flex items-center justify-center font-bold text-lg"
-                >
-                  {num}
+        <Card className="p-2 md:p-6 overflow-x-auto">
+          <div className="flex justify-center">
+            <div
+              ref={chartRef}
+              className="select-none touch-none"
+              onPointerUp={handlePointerUp}
+              onPointerLeave={handlePointerUp}
+            >
+              <div className="grid gap-0.5 md:gap-1" style={{ gridTemplateColumns: 'repeat(13, minmax(0, 1fr))' }}>
+                <div className="w-9 h-9 sm:w-11 sm:h-11 md:w-16 md:h-16 bg-muted rounded flex items-center justify-center font-bold text-sm md:text-lg">
+                  ×
                 </div>
-              ))}
-
-              {Array.from({ length: 12 }, (_, row) => row + 1).map((rowNum) => (
-                <>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
                   <div
-                    key={`row-header-${rowNum}`}
-                    className="w-12 h-12 md:w-16 md:h-16 bg-primary text-primary-foreground rounded flex items-center justify-center font-bold text-lg"
+                    key={`header-${num}`}
+                    className="w-9 h-9 sm:w-11 sm:h-11 md:w-16 md:h-16 bg-primary text-primary-foreground rounded flex items-center justify-center font-bold text-sm md:text-lg"
                   >
-                    {rowNum}
+                    {num}
                   </div>
-                  {Array.from({ length: 12 }, (_, col) => col + 1).map((colNum) => {
-                    const key = getCellKey(rowNum, colNum)
-                    const isHighlighted = highlightedCells.has(key)
-                    const product = rowNum * colNum
+                ))}
 
-                    return (
-                      <div
-                        key={key}
-                        className="w-12 h-12 md:w-16 md:h-16 bg-card border-2 border-border rounded flex items-center justify-center font-semibold text-base md:text-lg cursor-pointer transition-all hover:scale-105"
-                        style={{
-                          backgroundColor: isHighlighted ? selectedColor : undefined,
-                          color: isHighlighted ? 'white' : undefined
-                        }}
-                        onPointerDown={() => handlePointerDown(rowNum, colNum)}
-                        onPointerEnter={() => handlePointerEnter(rowNum, colNum)}
-                      >
-                        {product}
-                      </div>
-                    )
-                  })}
-                </>
-              ))}
+                {Array.from({ length: 12 }, (_, row) => row + 1).map((rowNum) => (
+                  <>
+                    <div
+                      key={`row-header-${rowNum}`}
+                      className="w-9 h-9 sm:w-11 sm:h-11 md:w-16 md:h-16 bg-primary text-primary-foreground rounded flex items-center justify-center font-bold text-sm md:text-lg"
+                    >
+                      {rowNum}
+                    </div>
+                    {Array.from({ length: 12 }, (_, col) => col + 1).map((colNum) => {
+                      const key = getCellKey(rowNum, colNum)
+                      const isHighlighted = highlightedCells.has(key)
+                      const product = rowNum * colNum
+
+                      return (
+                        <div
+                          key={key}
+                          className="w-9 h-9 sm:w-11 sm:h-11 md:w-16 md:h-16 bg-card border border-border rounded flex items-center justify-center font-semibold text-xs sm:text-sm md:text-lg cursor-pointer transition-all active:scale-95"
+                          style={{
+                            backgroundColor: isHighlighted ? selectedColor : undefined,
+                            color: isHighlighted ? 'white' : undefined
+                          }}
+                          onPointerDown={() => handlePointerDown(rowNum, colNum)}
+                          onPointerEnter={() => handlePointerEnter(rowNum, colNum)}
+                        >
+                          {product}
+                        </div>
+                      )
+                    })}
+                  </>
+                ))}
+              </div>
             </div>
           </div>
         </Card>

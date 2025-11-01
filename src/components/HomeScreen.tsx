@@ -1,4 +1,4 @@
-import { Calculator, Flask, Book, ChartBar } from '@phosphor-icons/react'
+import { Calculator, Flask, Book, ChartBar, Code } from '@phosphor-icons/react'
 import { SubjectCard } from '@/components/SubjectCard'
 import { Button } from '@/components/ui/button'
 import { Subject } from '@/lib/types'
@@ -32,7 +32,7 @@ export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps)
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           <SubjectCard
             subject="math"
             title="Math Fun"
@@ -52,12 +52,21 @@ export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps)
           />
           
           <SubjectCard
+            subject="coding"
+            title="Coding Fun"
+            icon={<Code weight="fill" />}
+            color="oklch(0.70 0.18 280)"
+            onClick={() => onSelectSubject('coding')}
+            delay={0.2}
+          />
+          
+          <SubjectCard
             subject="arabic"
             title="Arabic Studies"
             icon={<Book weight="fill" />}
             color="oklch(0.68 0.16 30)"
             onClick={() => onSelectSubject('arabic')}
-            delay={0.2}
+            delay={0.3}
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-export type Subject = 'math' | 'science' | 'arabic'
+export type Subject = 'math' | 'science' | 'arabic' | 'coding'
 
 export type MathOperation = 'addition' | 'subtraction' | 'multiplication' | 'division'
 
