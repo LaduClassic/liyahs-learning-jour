@@ -93,38 +93,42 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
           </Card>
         )}
 
-        <div className="mb-6 sm:mb-8 text-center px-4">
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
-            مرحبا! Let's learn Arabic! 🌙
-          </p>
-        </div>
+        {!showSubjectSelector && (
+          <>
+            <div className="mb-6 sm:mb-8 text-center px-4">
+              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
+                مرحبا! Let's learn Arabic! 🌙
+              </p>
+            </div>
 
-        <Tabs defaultValue="letters" className="w-full">
-          <div className="flex justify-center mb-6 sm:mb-8 px-2">
-            <TabsList className="inline-flex gap-2 bg-muted/50 p-2 rounded-full w-full sm:w-auto max-w-md">
-              <TabsTrigger
-                value="letters"
-                className="rounded-full px-4 sm:px-6 py-2 font-bold text-sm sm:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground flex-1 sm:flex-initial"
-              >
-                Letters
-              </TabsTrigger>
-              <TabsTrigger
-                value="prep"
-                className="rounded-full px-4 sm:px-6 py-2 font-bold text-sm sm:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground flex-1 sm:flex-initial"
-              >
-                Quiz Prep
-              </TabsTrigger>
-            </TabsList>
-          </div>
+            <Tabs defaultValue="letters" className="w-full">
+              <div className="flex justify-center mb-6 sm:mb-8 px-2">
+                <TabsList className="inline-flex gap-2 bg-muted/50 p-2 rounded-full w-full sm:w-auto max-w-md">
+                  <TabsTrigger
+                    value="letters"
+                    className="rounded-full px-4 sm:px-6 py-2 font-bold text-sm sm:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground flex-1 sm:flex-initial"
+                  >
+                    Letters
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="prep"
+                    className="rounded-full px-4 sm:px-6 py-2 font-bold text-sm sm:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground flex-1 sm:flex-initial"
+                  >
+                    Quiz Prep
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-          <TabsContent value="letters" className="mt-0 w-full">
-            <LettersQuiz />
-          </TabsContent>
+              <TabsContent value="letters" className="mt-0 w-full">
+                <LettersQuiz />
+              </TabsContent>
 
-          <TabsContent value="prep" className="mt-0 w-full">
-            <QuizPrep />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="prep" className="mt-0 w-full">
+                <QuizPrep />
+              </TabsContent>
+            </Tabs>
+          </>
+        )}
       </div>
 
       <LetterReference
