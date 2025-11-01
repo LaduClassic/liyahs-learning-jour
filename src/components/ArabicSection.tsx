@@ -1,39 +1,18 @@
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { ArrowLeft, BookOpen, PencilSimple, Translate, Microphone } from '@phosphor-icons/react'
-import { motion } from 'framer-motion'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ArrowLeft, Question } from '@phosphor-icons/react'
+import { LettersQuiz } from '@/components/arabic/LettersQuiz'
+import { QuizPrep } from '@/components/arabic/QuizPrep'
+import { LetterReference } from '@/components/arabic/LetterReference'
 
 interface ArabicSectionProps {
   onBack: () => void
 }
 
 export function ArabicSection({ onBack }: ArabicSectionProps) {
-  const lessons = [
-    {
-      title: 'Letters & Sounds',
-      description: 'Learn the Arabic alphabet',
-      icon: <BookOpen weight="fill" size={48} />,
-      color: 'oklch(0.68 0.16 30)'
-    },
-    {
-      title: 'Writing Practice',
-      description: 'Practice writing Arabic letters',
-      icon: <PencilSimple weight="fill" size={48} />,
-      color: 'oklch(0.65 0.18 20)'
-    },
-    {
-      title: 'Words & Vocabulary',
-      description: 'Build your Arabic word knowledge',
-      icon: <Translate weight="fill" size={48} />,
-      color: 'oklch(0.70 0.16 40)'
-    },
-    {
-      title: 'Pronunciation',
-      description: 'Listen and speak Arabic words',
-      icon: <Microphone weight="fill" size={48} />,
-      color: 'oklch(0.65 0.20 10)'
-    }
-  ]
+  const [showReference, setShowReference] = useState(false)
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -50,10 +29,18 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
           </Button>
           
           <h2 className="text-4xl md:text-5xl font-bold" style={{ color: 'oklch(0.68 0.16 30)' }}>
-            Arabic Studies 📖
+            Aaliyah's Journey ✨
           </h2>
           
-          <div className="w-24" />
+          <Button
+            variant="default"
+            size="lg"
+            onClick={() => setShowReference(true)}
+            className="gap-2"
+          >
+            <Question size={24} weight="fill" />
+            Help
+          </Button>
         </div>
 
         <div className="mb-8 text-center">
@@ -62,40 +49,38 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {lessons.map((lesson, index) => (
-            <motion.div
-              key={lesson.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              whileHover={{ scale: 1.03, y: -4 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Card
-                className="cursor-pointer h-56 flex flex-col items-center justify-center gap-4 p-6 transition-shadow hover:shadow-2xl"
-                style={{ backgroundColor: lesson.color }}
+        <Tabs defaultValue="letters" className="w-full">
+          <div className="flex justify-center mb-8">
+            <TabsList className="inline-flex gap-2 bg-muted/50 p-2 rounded-full">
+              <TabsTrigger
+                value="letters"
+                className="rounded-full px-6 py-2 font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground"
               >
-                <div className="text-white">
-                  {lesson.icon}
-                </div>
-                <h3 className="text-2xl font-bold text-white text-center">
-                  {lesson.title}
-                </h3>
-                <p className="text-white/90 text-center text-lg">
-                  {lesson.description}
-                </p>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                Letters
+              </TabsTrigger>
+              <TabsTrigger
+                value="prep"
+                className="rounded-full px-6 py-2 font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground"
+              >
+                Quiz Prep
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        <Card className="mt-8 p-8 bg-accent/20">
-          <p className="text-xl text-center text-foreground">
-            More Arabic lessons coming soon! Keep learning! 📚
-          </p>
-        </Card>
+          <TabsContent value="letters" className="mt-0">
+            <LettersQuiz />
+          </TabsContent>
+
+          <TabsContent value="prep" className="mt-0">
+            <QuizPrep />
+          </TabsContent>
+        </Tabs>
       </div>
+
+      <LetterReference
+        open={showReference}
+        onOpenChange={setShowReference}
+      />
     </div>
   )
 }

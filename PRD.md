@@ -55,11 +55,22 @@ This app features multiple learning sections with interactive games, progress tr
 - **Success criteria**: Multiple varied messages, animated celebrations, no discouraging language
 
 ### Arabic Studies Integration
-- **Functionality**: Preserve existing Arabic learning content with consistent design
-- **Purpose**: Maintain current educational goals alongside new content
+- **Functionality**: Comprehensive Arabic learning with letter recognition quiz and vocabulary practice modes
+- **Purpose**: Build Arabic literacy through interactive letter forms study and word recognition exercises
 - **Trigger**: Selecting Arabic from home screen
-- **Progression**: Arabic section → Lesson/activity selection → Complete activity → Return to home
-- **Success criteria**: Arabic content accessible with same navigation patterns as new sections
+- **Progression**: 
+  - Letters Mode: Quiz on letter forms → Select answer → Get feedback → View score → Access reference guide
+  - Quiz Prep Mode: Choose activity (Flashcards/Letter Order/Phonetic Match/Definition Match/Write It) → Complete exercises → Practice spelling words
+- **Success criteria**: 
+  - Letter Quiz: Two modes (Form→Name and Name→Form) with all three forms (beginning, middle, final)
+  - Reference Panel: Scrollable letter guide showing all forms with romanization
+  - Quiz Prep: 5 different practice modes for vocabulary words with definitions and phonetics
+  - Letter Order: Drag-and-drop letter clusters to build words
+  - Phonetic Match: Match Arabic words to transliterations
+  - Definition Match: Pair Arabic words with English meanings
+  - Write It: Type Arabic from phonetic prompts with validation
+  - Flashcards: Review words with reveal functionality
+  - All Arabic text properly styled with Scheherazade New font and RTL direction
 
 ### Science Section
 - **Functionality**: Interactive science activities including periodic table exploration, water cycle learning, and solar system discovery
@@ -121,10 +132,11 @@ Triadic color scheme with vibrant, child-friendly primaries that create energy a
 
 ## Font Selection
 
-Fonts should be warm, highly legible for emerging readers, and feel friendly rather than academic - choosing rounded sans-serifs that are used in children's books.
+Fonts should be warm, highly legible for emerging readers, and feel friendly rather than academic - choosing rounded sans-serifs that are used in children's books. Arabic text requires a traditional, readable Arabic font.
 
 - **Primary Font**: Nunito (Google Fonts) - Rounded, friendly, excellent for numbers and letters
 - **Display Font**: Fredoka (Google Fonts) - Playful, bold for headings and subject titles
+- **Arabic Font**: Scheherazade New (Google Fonts) - Traditional Naskh style, highly readable for Arabic script
 
 - **Typographic Hierarchy**:
   - H1 (Subject Titles): Fredoka Bold/48px/tight letter spacing/line-height 1.1
@@ -132,6 +144,8 @@ Fonts should be warm, highly legible for emerging readers, and feel friendly rat
   - H3 (Activity Names): Nunito Bold/24px/normal letter spacing/line-height 1.3
   - Body (Instructions): Nunito Regular/20px/relaxed letter spacing/line-height 1.6
   - Large Interactive Text (Problems): Nunito Bold/36px/normal letter spacing/line-height 1.4
+  - Arabic Display: Scheherazade New Regular/72-110px/line-height 1.2/RTL direction
+  - Arabic Body: Scheherazade New Regular/24-36px/line-height 1.4/RTL direction
   - Buttons: Nunito Bold/18px/wide letter spacing/line-height 1
   - Small Labels: Nunito SemiBold/16px/normal letter spacing/line-height 1.4
 
