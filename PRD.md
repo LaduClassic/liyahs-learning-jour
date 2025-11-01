@@ -55,12 +55,13 @@ This app features multiple learning sections with interactive games, progress tr
 - **Success criteria**: Multiple varied messages, animated celebrations, no discouraging language
 
 ### Arabic Studies Integration
-- **Functionality**: Comprehensive Arabic learning with letter recognition quiz and vocabulary practice modes
-- **Purpose**: Build Arabic literacy through interactive letter forms study and word recognition exercises
+- **Functionality**: Comprehensive Arabic learning with letter recognition quiz, vocabulary practice modes, and custom quiz upload system
+- **Purpose**: Build Arabic literacy through interactive letter forms study and word recognition exercises with ability to customize vocabulary lists
 - **Trigger**: Selecting Arabic from home screen
 - **Progression**: 
   - Letters Mode: Quiz on letter forms → Select answer → Get feedback → View score → Access reference guide
   - Quiz Prep Mode: Choose activity (Flashcards/Letter Order/Phonetic Match/Definition Match/Write It) → Complete exercises → Practice spelling words
+  - Settings: Click gear icon → Upload custom quiz .txt file → Words automatically populate into all quiz modes
 - **Success criteria**: 
   - Letter Quiz: Two modes (Form→Name and Name→Form) with all three forms (beginning, middle, final)
   - Reference Panel: Scrollable letter guide showing all forms with romanization
@@ -68,8 +69,11 @@ This app features multiple learning sections with interactive games, progress tr
   - Letter Order: Drag-and-drop letter clusters to build words
   - Phonetic Match: Match Arabic words to transliterations
   - Definition Match: Pair Arabic words with English meanings
-  - Write It: Type Arabic from phonetic prompts with validation
+  - Write It: Display dotted outline of Arabic word for tracing practice, then type Arabic from phonetic prompts with validation
   - Flashcards: Review words with reveal functionality
+  - Quiz Upload: Settings dialog with drag-and-drop file upload, file format validation, preview of uploaded words, reset to defaults option
+  - Custom quiz words persist across sessions and populate into all quiz modes automatically
+  - Default quiz1.txt file available in quiz-uploads folder with format: arabic|phonetic|definition
   - All Arabic text properly styled with Scheherazade New font and RTL direction
 
 ### Science Section

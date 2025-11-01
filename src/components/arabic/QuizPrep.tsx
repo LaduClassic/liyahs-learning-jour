@@ -1,15 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { SPELLING_WORDS, clusterArabic, normalizeArabic } from '@/lib/arabicData'
+import { SPELLING_WORDS, clusterArabic, normalizeArabic, updateSpellingWords, SpellingWord } from '@/lib/arabicData'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
+import { QuizUploader } from '@/components/arabic/QuizUploader'
+import { useKV } from '@github/spark/hooks'
 
 type PrepMode = 'flashcards' | 'letter-order' | 'phonetic-match' | 'definition-match' | 'write-it'
 
 export function QuizPrep() {
   const [mode, setMode] = useState<PrepMode>('flashcards')
   const [wordIndex, setWordIndex] = useState(0)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [customWords] = useKV<SpellingWord[] | null>('arabic-custom-words', null)
+
+  useEffect(() => {
+    if (customWords) {
+      updateSpellingWords(customWords as any)
+      setRefreshKey(prev => prev + 1)
+    }
+  }, [customWords])
+
+  const handleWordsUpdated = () => {
+    setRefreshKey(prev => prev + 1)
+    setWordIndex(0)
+  }
 
   const modes: Array<{ id: PrepMode; label: string }> = [
     { id: 'flashcards', label: 'Flashcards' },
@@ -29,25 +45,28 @@ export function QuizPrep() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-center">
-        <div className="inline-flex flex-wrap gap-2 p-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full shadow-lg">
-          {modes.map(({ id, label }) => (
-            <Button
-              key={id}
-              variant={mode === id ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => {
-                setMode(id)
-                setWordIndex(0)
-              }}
-              className={`rounded-full font-bold ${
-                mode === id ? 'shadow-lg' : ''
-              }`}
-            >
-              {label}
-            </Button>
-          ))}
+      <div className="flex justify-between items-center gap-4">
+        <div className="flex-1 flex justify-center">
+          <div className="inline-flex flex-wrap gap-2 p-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full shadow-lg">
+            {modes.map(({ id, label }) => (
+              <Button
+                key={id}
+                variant={mode === id ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => {
+                  setMode(id)
+                  setWordIndex(0)
+                }}
+                className={`rounded-full font-bold ${
+                  mode === id ? 'shadow-lg' : ''
+                }`}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
         </div>
+        <QuizUploader onWordsUpdated={handleWordsUpdated} />
       </div>
 
       <p className="text-xl md:text-2xl text-center text-muted-foreground">
@@ -56,7 +75,7 @@ export function QuizPrep() {
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={mode}
+          key={`${mode}-${refreshKey}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
@@ -413,31 +432,67 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
 
   return (
     <Card className="p-8 space-y-6">
-      <p className="text-center text-xl font-mono text-primary">
-        Write the Arabic: {word.phonetic}
-      </p>
-
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="اكتب الكلمة هنا"
-        dir="rtl"
-        className="w-full text-3xl p-4 border-2 border-input rounded-2xl bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-        style={{
-          fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
-        }}
-      />
-
-      {input && (
-        <p
-          className={`text-center text-xl font-bold ${
-            isCorrect ? 'text-success' : 'text-destructive'
-          }`}
-        >
-          {isCorrect ? 'Correct! ✅' : 'Keep trying…'}
+      <div className="space-y-4">
+        <p className="text-center text-xl font-mono text-primary font-bold">
+          {word.phonetic}
         </p>
-      )}
+        <p className="text-center text-lg text-muted-foreground">
+          {word.definition}
+        </p>
+      </div>
+
+      <div className="bg-muted/30 rounded-2xl p-6 space-y-4">
+        <p className="text-center text-sm text-muted-foreground uppercase tracking-wide font-semibold">
+          Trace the word
+        </p>
+        
+        <div 
+          className="relative flex justify-center items-center min-h-[120px] bg-background rounded-xl border-2 border-dashed border-primary/30 p-4"
+          dir="rtl"
+        >
+          <div
+            className="text-7xl select-none pointer-events-none"
+            style={{
+              fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+              color: 'oklch(0.60 0.19 250 / 0.25)',
+              textShadow: '0 0 1px oklch(0.60 0.19 250 / 0.4)',
+              WebkitTextStroke: '1px oklch(0.60 0.19 250 / 0.3)'
+            }}
+          >
+            {word.arabic}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <p className="text-center text-sm text-muted-foreground uppercase tracking-wide font-semibold">
+          Now write it yourself
+        </p>
+        
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="اكتب الكلمة هنا"
+          dir="rtl"
+          className="w-full text-4xl p-6 border-2 border-input rounded-2xl bg-background focus:outline-none focus:ring-2 focus:ring-ring text-center"
+          style={{
+            fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
+          }}
+        />
+
+        {input && (
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`text-center text-xl font-bold ${
+              isCorrect ? 'text-success' : 'text-destructive'
+            }`}
+          >
+            {isCorrect ? 'Perfect! ✅' : 'Keep trying…'}
+          </motion.p>
+        )}
+      </div>
 
       <div className="flex gap-3 justify-center flex-wrap">
         <Button onClick={handlePrev}>Prev Word</Button>

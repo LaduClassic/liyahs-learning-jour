@@ -298,7 +298,7 @@ export interface SpellingWord {
   definition: string
 }
 
-export const SPELLING_WORDS: SpellingWord[] = [
+export const DEFAULT_SPELLING_WORDS: SpellingWord[] = [
   { arabic: 'شَعْرٌ', phonetic: 'sha-r', definition: 'hair' },
   { arabic: 'بُنِّيٌّ', phonetic: 'bun-nii-y', definition: 'brown' },
   { arabic: 'قَصِيرٌ', phonetic: 'qa-sii-r', definition: 'short' },
@@ -309,6 +309,31 @@ export const SPELLING_WORDS: SpellingWord[] = [
   { arabic: 'كُرَةٌ', phonetic: 'ku-rah', definition: 'ball' },
   { arabic: 'الْمِضْرَبُ', phonetic: 'al-mid-ra-bu', definition: 'the racket' }
 ]
+
+export const SPELLING_WORDS: SpellingWord[] = [...DEFAULT_SPELLING_WORDS]
+
+export function parseQuizFile(content: string): SpellingWord[] {
+  const lines = content.split('\n').filter(line => line.trim())
+  const words: SpellingWord[] = []
+  
+  for (const line of lines) {
+    const parts = line.split('|').map(p => p.trim())
+    if (parts.length === 3) {
+      words.push({
+        arabic: parts[0],
+        phonetic: parts[1],
+        definition: parts[2]
+      })
+    }
+  }
+  
+  return words
+}
+
+export function updateSpellingWords(newWords: SpellingWord[]) {
+  SPELLING_WORDS.length = 0
+  SPELLING_WORDS.push(...newWords)
+}
 
 const HARAKAT = /[\u064B-\u0652]/g
 const TATWEEL = /\u0640/g
