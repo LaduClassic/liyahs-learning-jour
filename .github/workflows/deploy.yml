@@ -24,7 +24,7 @@ jobs:
       - name: Upload production artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./build       # <-- change to your output directory (dist, public, etc.)
+          path: ./dist       # <-- change to your output directory (dist, public, etc.)
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
