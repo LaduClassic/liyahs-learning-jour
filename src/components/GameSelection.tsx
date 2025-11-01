@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Lightning, Cards, GridFour } from '@phosphor-icons/react'
+import { ArrowLeft, Lightning, Cards, GridFour, BookOpen } from '@phosphor-icons/react'
 import { MathOperation, GameType } from '@/lib/types'
 
 interface GameSelectionProps {
@@ -50,6 +50,13 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
       description: 'Answer as many as you can in 60 seconds!',
       icon: <Lightning weight="fill" size={48} />,
       color: 'oklch(0.70 0.18 50)'
+    },
+    {
+      type: 'word-problems' as GameType,
+      title: 'Word Problems',
+      description: 'Solve story-based math adventures!',
+      icon: <BookOpen weight="fill" size={48} />,
+      color: 'oklch(0.65 0.20 280)'
     }
   )
 

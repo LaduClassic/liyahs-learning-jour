@@ -7,6 +7,7 @@ import { GameSelection } from '@/components/GameSelection'
 import { FlashcardGame } from '@/components/FlashcardGame'
 import { RacingGame } from '@/components/RacingGame'
 import { MultiplicationChart } from '@/components/MultiplicationChart'
+import { WordProblemsGame } from '@/components/WordProblemsGame'
 
 interface MathSectionProps {
   onBack: () => void
@@ -51,6 +52,16 @@ export function MathSection({ onBack, onSessionComplete }: MathSectionProps) {
   if (selectedGame === 'racing') {
     return (
       <RacingGame
+        operation={selectedOperation}
+        onBack={handleBackToGames}
+        onSessionComplete={handleGameComplete}
+      />
+    )
+  }
+
+  if (selectedGame === 'word-problems') {
+    return (
+      <WordProblemsGame
         operation={selectedOperation}
         onBack={handleBackToGames}
         onSessionComplete={handleGameComplete}
