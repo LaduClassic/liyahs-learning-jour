@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { SPELLING_WORDS, clusterArabic, normalizeArabic, updateSpellingWords, SpellingWord } from '@/lib/arabicData'
@@ -415,26 +415,118 @@ function DefinitionMatchMode() {
 
 function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
   const word = SPELLING_WORDS[wordIndex]
-  const [input, setInput] = useState('')
   const [showTrace, setShowTrace] = useState(true)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [isDrawing, setIsDrawing] = useState(false)
+  const [hasDrawn, setHasDrawn] = useState(false)
 
-  const checkAnswer = () => {
-    const normalized = normalizeArabic(input)
-    const expected = normalizeArabic(word.arabic)
-    return normalized === expected
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const resizeCanvas = () => {
+      const parent = canvas.parentElement
+      if (!parent) return
+
+      const rect = parent.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
+      
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      
+      canvas.style.width = `${rect.width}px`
+      canvas.style.height = `${rect.height}px`
+      
+      ctx.scale(dpr, dpr)
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.lineWidth = 3
+      ctx.strokeStyle = 'oklch(0.60 0.19 250)'
+    }
+
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
+
+    return () => window.removeEventListener('resize', resizeCanvas)
+  }, [wordIndex])
+
+  const getCoordinates = (e: React.TouchEvent | React.MouseEvent | React.PointerEvent) => {
+    const canvas = canvasRef.current
+    if (!canvas) return null
+
+    const rect = canvas.getBoundingClientRect()
+    
+    let clientX: number, clientY: number
+
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX
+      clientY = e.touches[0].clientY
+    } else if ('clientX' in e) {
+      clientX = e.clientX
+      clientY = e.clientY
+    } else {
+      return null
+    }
+
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    }
   }
 
-  const isCorrect = input.length > 0 && checkAnswer()
+  const startDrawing = (e: React.PointerEvent) => {
+    e.preventDefault()
+    const coords = getCoordinates(e)
+    if (!coords) return
+
+    const ctx = canvasRef.current?.getContext('2d')
+    if (!ctx) return
+
+    setIsDrawing(true)
+    setHasDrawn(true)
+    ctx.beginPath()
+    ctx.moveTo(coords.x, coords.y)
+  }
+
+  const draw = (e: React.PointerEvent) => {
+    if (!isDrawing) return
+    e.preventDefault()
+
+    const coords = getCoordinates(e)
+    if (!coords) return
+
+    const ctx = canvasRef.current?.getContext('2d')
+    if (!ctx) return
+
+    ctx.lineTo(coords.x, coords.y)
+    ctx.stroke()
+  }
+
+  const stopDrawing = () => {
+    setIsDrawing(false)
+  }
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!ctx || !canvas) return
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    setHasDrawn(false)
+  }
 
   const handlePrev = () => {
     setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
-    setInput('')
+    clearCanvas()
     setShowTrace(true)
   }
 
   const handleNext = () => {
     setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
-    setInput('')
+    clearCanvas()
     setShowTrace(true)
   }
 
@@ -454,7 +546,7 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <p className="text-center flex-1 text-xs sm:text-sm text-muted-foreground uppercase tracking-wide font-semibold">
-                Trace the word
+                Use your stylus to trace
               </p>
               <Button
                 variant="ghost"
@@ -467,54 +559,50 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
             </div>
             
             <div 
-              className="relative flex justify-center items-center min-h-[100px] sm:min-h-[120px] bg-background rounded-xl border-2 border-dashed border-primary/30 p-4 overflow-x-auto"
+              className="relative w-full min-h-[200px] sm:min-h-[250px] md:min-h-[300px] bg-background rounded-xl border-2 border-dashed border-primary/30 overflow-hidden touch-none"
               dir="rtl"
             >
               {showTrace && (
                 <div
-                  className="text-5xl sm:text-6xl md:text-7xl select-none pointer-events-none whitespace-nowrap"
-                  style={{
-                    fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
-                    color: 'oklch(0.60 0.19 250 / 0.25)',
-                    textShadow: '0 0 1px oklch(0.60 0.19 250 / 0.4)',
-                    WebkitTextStroke: '1px oklch(0.60 0.19 250 / 0.3)'
-                  }}
+                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4"
                 >
-                  {word.arabic}
+                  <div
+                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl whitespace-nowrap"
+                    style={{
+                      fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+                      color: 'oklch(0.60 0.19 250 / 0.25)',
+                      textShadow: '0 0 1px oklch(0.60 0.19 250 / 0.4)',
+                      WebkitTextStroke: '1px oklch(0.60 0.19 250 / 0.3)'
+                    }}
+                  >
+                    {word.arabic}
+                  </div>
                 </div>
               )}
+              
+              <canvas
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full touch-none cursor-crosshair"
+                onPointerDown={startDrawing}
+                onPointerMove={draw}
+                onPointerUp={stopDrawing}
+                onPointerLeave={stopDrawing}
+                onPointerCancel={stopDrawing}
+                style={{ touchAction: 'none' }}
+              />
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearCanvas}
+                disabled={!hasDrawn}
+              >
+                Clear
+              </Button>
             </div>
           </div>
-        </div>
-
-        <div className="flex flex-col gap-4 w-full">
-          <p className="text-center text-xs sm:text-sm text-muted-foreground uppercase tracking-wide font-semibold">
-            Now write it yourself
-          </p>
-          
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="اكتب الكلمة هنا"
-            dir="rtl"
-            className="w-full text-2xl sm:text-3xl md:text-4xl p-4 sm:p-6 border-2 border-input rounded-2xl bg-background focus:outline-none focus:ring-2 focus:ring-ring text-center"
-            style={{
-              fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif"
-            }}
-          />
-
-          {input && (
-            <motion.p
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`text-center text-lg sm:text-xl font-bold ${
-                isCorrect ? 'text-success' : 'text-destructive'
-              }`}
-            >
-              {isCorrect ? 'Perfect! ✅' : 'Keep trying…'}
-            </motion.p>
-          )}
         </div>
 
         <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
