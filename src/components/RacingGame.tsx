@@ -8,6 +8,7 @@ import { ArrowLeft, Lightning } from '@phosphor-icons/react'
 import { MathOperation, Problem } from '@/lib/types'
 import { generateProblem, formatProblem } from '@/lib/gameUtils'
 import { Confetti } from '@/components/Confetti'
+import { slideInRight } from '@/lib/animations'
 
 interface RacingGameProps {
   operation: MathOperation
@@ -106,8 +107,9 @@ export function RacingGame({ operation, onBack, onSessionComplete }: RacingGameP
         {gameActive ? (
           <motion.div
             key={currentProblem.id}
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+            variants={slideInRight}
+            initial="initial"
+            animate="animate"
             transition={{ duration: 0.2 }}
           >
             <Card className="p-8 md:p-12">

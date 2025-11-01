@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Lightning, Cards, GridFour, BookOpen } from '@phosphor-icons/react'
 import { MathOperation, GameType } from '@/lib/types'
 import { ActivityGrid, ActivityCardData } from '@/components/ActivityGrid'
+import { ACTIVITY_COLORS } from '@/lib/colors'
 
 interface GameSelectionProps {
   operation: MathOperation
@@ -24,7 +25,7 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
       title: 'Times Table Chart',
       description: 'Explore patterns by highlighting',
       icon: <GridFour weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 300)',
+      color: ACTIVITY_COLORS.orange,
       onClick: () => onSelectGame('multiplication-chart')
     })
   }
@@ -34,21 +35,21 @@ export function GameSelection({ operation, onSelectGame, onBack }: GameSelection
       title: 'Flashcards',
       description: 'Practice at your own pace',
       icon: <Cards weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 200)',
+      color: ACTIVITY_COLORS.cyan,
       onClick: () => onSelectGame('flashcards')
     },
     {
       title: 'Speed Race',
       description: 'Answer as many as you can in 60 seconds!',
       icon: <Lightning weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 50)',
+      color: ACTIVITY_COLORS.yellow,
       onClick: () => onSelectGame('racing')
     },
     {
       title: 'Word Problems',
       description: 'Solve story-based math adventures!',
       icon: <BookOpen weight="fill" size={48} />,
-      color: 'oklch(0.65 0.20 280)',
+      color: ACTIVITY_COLORS.purple,
       onClick: () => onSelectGame('word-problems')
     }
   )

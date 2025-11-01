@@ -7,6 +7,7 @@ import { ArrowLeft, Check } from '@phosphor-icons/react'
 import { MathOperation, Problem, ENCOURAGING_MESSAGES } from '@/lib/types'
 import { generateProblem, formatProblem, getRandomMessage } from '@/lib/gameUtils'
 import { Confetti } from '@/components/Confetti'
+import { scaleIn } from '@/lib/animations'
 
 interface FlashcardGameProps {
   operation: MathOperation
@@ -95,9 +96,10 @@ export function FlashcardGame({ operation, onBack, onSessionComplete }: Flashcar
         <AnimatePresence mode="wait">
           <motion.div
             key={currentProblem.id}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
+            variants={scaleIn}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             transition={{ duration: 0.3 }}
           >
             <Card className="p-8 md:p-12">

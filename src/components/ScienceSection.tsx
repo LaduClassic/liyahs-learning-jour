@@ -3,8 +3,9 @@ import { Planet, Drop, Atom, Flask } from '@phosphor-icons/react'
 import { PeriodicTable } from '@/components/PeriodicTable'
 import { WaterCycle } from '@/components/WaterCycle'
 import { SolarSystem } from '@/components/SolarSystem'
-import { SectionHeader } from '@/components/SectionHeader'
+import { SectionLayout } from '@/components/layouts/SectionLayout'
 import { ActivityGrid, ActivityCardData } from '@/components/ActivityGrid'
+import { SUBJECT_COLORS, ACTIVITY_COLORS } from '@/lib/colors'
 
 interface ScienceSectionProps {
   onBack: () => void
@@ -32,48 +33,44 @@ export function ScienceSection({ onBack }: ScienceSectionProps) {
       title: 'Periodic Table',
       description: 'Discover amazing elements and their secrets!',
       icon: <Atom weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 280)',
+      color: ACTIVITY_COLORS.purple,
       onClick: () => setCurrentActivity('periodic-table')
     },
     {
       title: 'Water Cycle',
       description: 'Learn how water travels around our world',
       icon: <Drop weight="fill" size={48} />,
-      color: 'oklch(0.70 0.18 200)',
+      color: ACTIVITY_COLORS.cyan,
       onClick: () => setCurrentActivity('water-cycle')
     },
     {
       title: 'Solar System',
       description: 'Explore planets, stars, and space!',
       icon: <Planet weight="fill" size={48} />,
-      color: 'oklch(0.65 0.20 250)',
+      color: ACTIVITY_COLORS.pink,
       onClick: () => setCurrentActivity('solar-system')
     },
     {
       title: 'Science Experiments',
       description: 'Coming soon: Fun experiments to try!',
       icon: <Flask weight="fill" size={48} />,
-      color: 'oklch(0.65 0.18 140)',
+      color: ACTIVITY_COLORS.green,
       onClick: () => {},
       disabled: true
     }
   ]
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          title="Science Lab"
-          emoji="🔬"
-          onBack={onBack}
-          titleColor="oklch(0.70 0.18 50)"
-        />
-
-        <ActivityGrid
-          activities={activities}
-          subtitle="Explore the wonders of science! 🌟"
-        />
-      </div>
-    </div>
+    <SectionLayout
+      title="Science Lab"
+      emoji="🔬"
+      onBack={onBack}
+      titleColor={SUBJECT_COLORS.science}
+    >
+      <ActivityGrid
+        activities={activities}
+        subtitle="Explore the wonders of science! 🌟"
+      />
+    </SectionLayout>
   )
 }

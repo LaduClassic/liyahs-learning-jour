@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/card'
 import { Subject } from '@/lib/types'
+import { getStaggeredFadeInUp } from '@/lib/animations'
 
 interface SubjectCardProps {
   subject: Subject
@@ -14,9 +15,7 @@ interface SubjectCardProps {
 export function SubjectCard({ subject, title, icon, color, onClick, delay = 0 }: SubjectCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay }}
+      {...getStaggeredFadeInUp(delay * 10)}
       whileHover={{ scale: 1.05, y: -8 }}
       whileTap={{ scale: 0.98 }}
     >

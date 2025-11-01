@@ -2,6 +2,7 @@ import { Calculator, Flask, Book, ChartBar, Code } from '@phosphor-icons/react'
 import { SubjectCard } from '@/components/SubjectCard'
 import { Button } from '@/components/ui/button'
 import { Subject } from '@/lib/types'
+import { SUBJECT_COLORS } from '@/lib/colors'
 
 interface HomeScreenProps {
   onSelectSubject: (subject: Subject) => void
@@ -37,7 +38,7 @@ export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps)
             subject="math"
             title="Math Fun"
             icon={<Calculator weight="fill" />}
-            color="oklch(0.65 0.20 300)"
+            color={SUBJECT_COLORS.math}
             onClick={() => onSelectSubject('math')}
             delay={0}
           />
@@ -46,7 +47,7 @@ export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps)
             subject="science"
             title="Science Lab"
             icon={<Flask weight="fill" />}
-            color="oklch(0.70 0.18 50)"
+            color={SUBJECT_COLORS.science}
             onClick={() => onSelectSubject('science')}
             delay={0.1}
           />
@@ -55,7 +56,7 @@ export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps)
             subject="coding"
             title="Coding Fun"
             icon={<Code weight="fill" />}
-            color="oklch(0.70 0.18 280)"
+            color={SUBJECT_COLORS.coding}
             onClick={() => onSelectSubject('coding')}
             delay={0.2}
           />
@@ -64,7 +65,7 @@ export function HomeScreen({ onSelectSubject, onShowProgress }: HomeScreenProps)
             subject="arabic"
             title="Arabic Studies"
             icon={<Book weight="fill" />}
-            color="oklch(0.68 0.16 30)"
+            color={SUBJECT_COLORS.arabic}
             onClick={() => onSelectSubject('arabic')}
             delay={0.3}
           />

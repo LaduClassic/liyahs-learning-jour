@@ -136,16 +136,15 @@ export function WordProblemsGame({ operation, onBack, onSessionComplete }: WordP
   const currentProblem = problems[currentProblemIndex]
   const progress = (problemsSolved / problems.length) * 100
 
-  const shuffledOptions = useState(() => 
-    [...currentProblem.options].sort(() => Math.random() - 0.5)
-  )[0]
+  const [shuffledOptions, setShuffledOptions] = useState<number[]>([])
 
   useEffect(() => {
+    setShuffledOptions([...currentProblem.options].sort(() => Math.random() - 0.5))
     setShowHint(false)
     setFeedback({ message: '', isCorrect: null })
     setSelectedAnswer(null)
     setIsAnswered(false)
-  }, [currentProblemIndex])
+  }, [currentProblemIndex, currentProblem.options])
 
   const checkAnswer = (selected: number) => {
     if (isAnswered) return

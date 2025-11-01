@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/card'
+import { getStaggeredFadeInUp } from '@/lib/animations'
 
 export interface ActivityCardData {
   title: string
@@ -30,9 +31,7 @@ export function ActivityGrid({ activities, subtitle }: ActivityGridProps) {
         {activities.map((activity, index) => (
           <motion.div
             key={activity.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            {...getStaggeredFadeInUp(index)}
             whileHover={{ scale: activity.disabled ? 1 : 1.03, y: activity.disabled ? 0 : -4 }}
             whileTap={{ scale: activity.disabled ? 1 : 0.98 }}
           >
