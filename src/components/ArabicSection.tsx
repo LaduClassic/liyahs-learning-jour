@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -14,6 +14,10 @@ interface ArabicSectionProps {
 export function ArabicSection({ onBack }: ArabicSectionProps) {
   const [showReference, setShowReference] = useState(false)
   const [showSubjectSelector, setShowSubjectSelector] = useState(false)
+
+  useEffect(() => {
+    setShowSubjectSelector(false)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background p-3 sm:p-4 md:p-8 w-full overflow-x-hidden">
