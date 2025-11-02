@@ -67,7 +67,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
         description: 'You got it right!'
       })
       onScoreUpdate?.(newScore, newTotal)
-    } else {
+    } else {F
       toast.error('Try again! 💪', {
         description: `That was ${selectedLetter.name}, the correct answer is ${currentLetter?.name}`
       })
@@ -218,9 +218,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                         >
                           {currentLetter.forms[formType]}
                         </div>
-                        <div className="text-xs sm:text-sm text-muted-foreground capitalize">
-                          {formType}
-                        </div>
+                       
                       </Button>
                     )
                   })}
