@@ -67,7 +67,7 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
         description: 'You got it right!'
       })
       onScoreUpdate?.(newScore, newTotal)
-    } else {F
+    } else {
       toast.error('Try again! 💪', {
         description: `That was ${selectedLetter.name}, the correct answer is ${currentLetter?.name}`
       })
