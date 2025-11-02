@@ -20,9 +20,11 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
   const [score, setScore] = useState(0)
   const [total, setTotal] = useState(0)
   const [answered, setAnswered] = useState(false)
+  const [selectedOption, setSelectedOption] = useState<string | null>(null)
 
   const generateQuestion = () => {
     setAnswered(false)
+    setSelectedOption(null)
     const letterIndex = Math.floor(Math.random() * ARABIC_LETTERS.length)
     const letter = ARABIC_LETTERS[letterIndex]
     const forms: FormType[] = ['beginning', 'middle', 'final']
@@ -50,10 +52,11 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
     }
   }, [])
 
-  const handleAnswer = (selectedLetter: ArabicLetter, isCorrect: boolean) => {
+  const handleAnswer = (selectedLetter: ArabicLetter, isCorrect: boolean, optionId: string) => {
     if (answered) return
 
     setAnswered(true)
+    setSelectedOption(optionId)
     const newTotal = total + 1
     setTotal(newTotal)
 
@@ -144,14 +147,16 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full mt-4">
                   {options.map((option) => {
                     const isCorrect = option.name === currentLetter.name
-                    const showResult = answered
+                    const optionId = `${mode}-${option.name}`
+                    const isSelected = selectedOption === optionId
+                    const showResult = answered && isSelected
 
                     return (
                       <Button
                         key={option.name}
                         variant="outline"
                         size="lg"
-                        onClick={() => handleAnswer(option, isCorrect)}
+                        onClick={() => handleAnswer(option, isCorrect, optionId)}
                         disabled={answered}
                         className={`h-auto py-3 sm:py-4 text-base sm:text-lg ${
                           showResult && isCorrect
@@ -179,7 +184,9 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full mt-4">
                   {(['beginning', 'middle', 'final'] as FormType[]).map((formType) => {
                     const isCorrect = formType === currentForm
-                    const showResult = answered
+                    const optionId = `${mode}-${formType}`
+                    const isSelected = selectedOption === optionId
+                    const showResult = answered && isSelected
 
                     return (
                       <Button
@@ -189,7 +196,8 @@ export function LettersQuiz({ onScoreUpdate }: LettersQuizProps) {
                         onClick={() =>
                           handleAnswer(
                             currentLetter,
-                            isCorrect
+                            isCorrect,
+                            optionId
                           )
                         }
                         disabled={answered}
