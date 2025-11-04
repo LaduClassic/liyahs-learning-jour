@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Check, X } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
@@ -14,15 +14,25 @@ interface IslamicSectionProps {
   onQuizComplete?: (score: number, total: number) => void
 }
 
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) {
+  const shuffledQuestions = useMemo(() => shuffleArray(islamicQuiz1), [])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({})
   const [showResults, setShowResults] = useState(false)
   const [score, setScore] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
 
-  const question = islamicQuiz1[currentQuestion]
-  const isLastQuestion = currentQuestion === islamicQuiz1.length - 1
+  const question = shuffledQuestions[currentQuestion]
+  const isLastQuestion = currentQuestion === shuffledQuestions.length - 1
   const userAnswer = userAnswers[question.id] || ''
 
   const handleAnswer = (answer: string) => {
@@ -44,7 +54,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
 
     if (isLastQuestion) {
       let finalScore = 0
-      islamicQuiz1.forEach(q => {
+      shuffledQuestions.forEach(q => {
         if (userAnswers[q.id] && checkAnswer(userAnswers[q.id], q.correctAnswer)) {
           finalScore++
         }
@@ -56,8 +66,8 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
 
       setScore(finalScore)
       setShowResults(true)
-      setShowConfetti(finalScore >= islamicQuiz1.length * 0.7)
-      onQuizComplete?.(finalScore, islamicQuiz1.length)
+      setShowConfetti(finalScore >= shuffledQuestions.length * 0.7)
+      onQuizComplete?.(finalScore, shuffledQuestions.length)
     } else {
       setCurrentQuestion(prev => prev + 1)
     }
@@ -78,7 +88,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
   }
 
   if (showResults) {
-    const percentage = (score / islamicQuiz1.length) * 100
+    const percentage = (score / shuffledQuestions.length) * 100
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-[oklch(0.85_0.08_50)] via-background to-[oklch(0.90_0.06_80)] p-6">
@@ -101,7 +111,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
               </h2>
 
               <div className="text-6xl font-bold mb-6 text-foreground">
-                {score} / {islamicQuiz1.length}
+                {score} / {shuffledQuestions.length}
               </div>
 
               <p className="text-2xl mb-8 text-muted-foreground">
@@ -128,7 +138,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
           <Card className="mt-6 p-6 bg-white/90">
             <h3 className="text-2xl font-bold mb-4 text-center">Review Your Answers</h3>
             <div className="space-y-3">
-              {islamicQuiz1.map((q, idx) => {
+              {shuffledQuestions.map((q, idx) => {
                 const userAns = userAnswers[q.id]
                 const isCorrect = userAns && checkAnswer(userAns, q.correctAnswer)
 
@@ -169,7 +179,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
       <div className="max-w-3xl mx-auto mt-12">
         <div className="mb-6 flex justify-between items-center">
           <span className="text-lg font-semibold text-muted-foreground">
-            Question {currentQuestion + 1} of {islamicQuiz1.length}
+            Question {currentQuestion + 1} of {shuffledQuestions.length}
           </span>
           <span className="text-lg font-semibold px-4 py-2 bg-[#D4AF37]/20 rounded-full">
             {question.category}
@@ -180,7 +190,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
           <motion.div
             className="h-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700]"
             initial={{ width: 0 }}
-            animate={{ width: `${((currentQuestion + 1) / islamicQuiz1.length) * 100}%` }}
+            animate={{ width: `${((currentQuestion + 1) / shuffledQuestions.length) * 100}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
