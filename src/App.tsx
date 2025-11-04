@@ -7,10 +7,11 @@ import { MathSection } from '@/components/MathSection'
 import { ScienceSection } from '@/components/ScienceSection'
 import { ArabicSection } from '@/components/ArabicSection'
 import { CodingSection } from '@/components/CodingSection'
+import { IslamicSection } from '@/components/IslamicSection'
 import { ProgressDashboard } from '@/components/ProgressDashboard'
 import { Subject, MathOperation, ProgressData, GameSession } from '@/lib/types'
 
-type Screen = 'home' | 'math' | 'science' | 'arabic' | 'coding'
+type Screen = 'home' | 'math' | 'science' | 'arabic' | 'coding' | 'islamic-studies'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
@@ -33,6 +34,12 @@ function App() {
     arabicProgress: {
       completedLessons: 0,
       totalTime: 0
+    },
+    islamicProgress: {
+      quizzesCompleted: 0,
+      totalScore: 0,
+      totalQuestions: 0,
+      accuracy: 0
     },
     recentSessions: [],
     lastActive: Date.now()
@@ -78,12 +85,16 @@ function App() {
           },
           scienceProgress: { completedActivities: 0, totalTime: 0 },
           arabicProgress: { completedLessons: 0, totalTime: 0 },
+          islamicProgress: { quizzesCompleted: 0, totalScore: 0, totalQuestions: 0, accuracy: 0 },
           recentSessions: [session],
           lastActive: Date.now()
         }
       }
 
-      const newData = { ...currentData }
+      const newData = { 
+        ...currentData,
+        islamicProgress: currentData.islamicProgress || { quizzesCompleted: 0, totalScore: 0, totalQuestions: 0, accuracy: 0 }
+      }
       
       newData.totalSessions += 1
       newData.totalProblems += total
@@ -99,6 +110,60 @@ function App() {
       newData.recentSessions = [session, ...newData.recentSessions].slice(0, 10)
       newData.lastActive = Date.now()
       
+      return newData
+    })
+
+    if (accuracy >= 80) {
+      toast.success('Amazing work! 🌟', {
+        description: `You got ${score} out of ${total} correct!`
+      })
+    } else if (accuracy >= 60) {
+      toast.success('Good job! 👏', {
+        description: `You got ${score} out of ${total} correct. Keep practicing!`
+      })
+    } else {
+      toast.success('Keep trying! 💪', {
+        description: `You got ${score} out of ${total} correct. Practice makes perfect!`
+      })
+    }
+  }
+
+  const handleIslamicQuizComplete = (score: number, total: number) => {
+    const accuracy = total > 0 ? (score / total) * 100 : 0
+
+    setProgressData((currentData) => {
+      if (!currentData) {
+        return {
+          totalSessions: 1,
+          totalProblems: total,
+          totalCorrect: score,
+          overallAccuracy: accuracy,
+          mathProgress: {
+            addition: { attempted: 0, correct: 0, accuracy: 0, averageTime: 0, lastPracticed: 0 },
+            subtraction: { attempted: 0, correct: 0, accuracy: 0, averageTime: 0, lastPracticed: 0 },
+            multiplication: { attempted: 0, correct: 0, accuracy: 0, averageTime: 0, lastPracticed: 0 },
+            division: { attempted: 0, correct: 0, accuracy: 0, averageTime: 0, lastPracticed: 0 }
+          },
+          scienceProgress: { completedActivities: 0, totalTime: 0 },
+          arabicProgress: { completedLessons: 0, totalTime: 0 },
+          islamicProgress: { quizzesCompleted: 1, totalScore: score, totalQuestions: total, accuracy },
+          recentSessions: [],
+          lastActive: Date.now()
+        }
+      }
+
+      const newData = {
+        ...currentData,
+        islamicProgress: currentData.islamicProgress || { quizzesCompleted: 0, totalScore: 0, totalQuestions: 0, accuracy: 0 }
+      }
+
+      newData.totalSessions += 1
+      newData.islamicProgress.quizzesCompleted += 1
+      newData.islamicProgress.totalScore += score
+      newData.islamicProgress.totalQuestions += total
+      newData.islamicProgress.accuracy = (newData.islamicProgress.totalScore / newData.islamicProgress.totalQuestions) * 100
+      newData.lastActive = Date.now()
+
       return newData
     })
 
@@ -145,6 +210,13 @@ function App() {
 
       {currentScreen === 'arabic' && (
         <ArabicSection onBack={handleBackToHome} />
+      )}
+
+      {currentScreen === 'islamic-studies' && (
+        <IslamicSection 
+          onBack={handleBackToHome}
+          onQuizComplete={handleIslamicQuizComplete}
+        />
       )}
 
       <AnimatePresence>

@@ -1,6 +1,6 @@
 # Liyah's Journey - Interactive Learning Platform
 
-An engaging educational platform for second-grade students featuring Math, Science, Coding, and Arabic studies with progress tracking and encouraging feedback.
+An engaging educational platform for second-grade students featuring Math, Science, Coding, Arabic studies, and Islamic Studies with progress tracking and encouraging feedback.
 
 **Experience Qualities**:
 1. **Playful** - Bright colors, fun animations, and game-like interactions that make learning feel like play
@@ -13,11 +13,18 @@ This app features multiple learning sections with interactive games, progress tr
 ## Essential Features
 
 ### Subject Navigation
-- **Functionality**: Main navigation between Math, Science, Coding, and Arabic sections (Arabic is the default initial screen)
-- **Purpose**: Allows student to choose their learning focus independently with Arabic learning front and center
-- **Trigger**: App opens to Arabic section by default; clicking/tapping "Subjects" button reveals navigation to other sections
-- **Progression**: Arabic section (initial) → Subjects button → Subject selector panel → Choose subject → Topic selection screen → Game/activity
-- **Success criteria**: App loads directly into Arabic section, child can navigate to other subjects via subject selector, and return to any section easily
+- **Functionality**: Main navigation between Math, Science, Coding, Arabic, and Islamic Studies sections
+- **Purpose**: Allows student to choose their learning focus independently with comprehensive subject coverage
+- **Trigger**: App opens to home screen; clicking/tapping any subject card navigates to that section
+- **Progression**: Home screen → Choose subject → Subject-specific activities → Complete activity → Return to home
+- **Success criteria**: App loads home screen, child can navigate to all subjects, and return to home easily
+
+### Islamic Studies Section (NEW)
+- **Functionality**: Interactive quiz covering The Five Pillars of Islam with multiple question types (fill-in-the-blank, multiple choice, true/false)
+- **Purpose**: Reinforce Islamic education fundamentals in an engaging, accessible format
+- **Trigger**: Selecting Islamic Studies from home screen
+- **Progression**: Open Islamic Studies → Read question → Answer (type, select, or choose) → Next question → View results with detailed review
+- **Success criteria**: All 13 questions are presented clearly, immediate feedback on completion, progress tracking saves quiz results, detailed answer review shows correct answers
 
 ### Math Section - Four Operations
 - **Functionality**: Subtraction, Addition, Multiplication, and Division practice through interactive games

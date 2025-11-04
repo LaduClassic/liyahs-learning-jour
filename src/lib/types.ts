@@ -1,4 +1,4 @@
-export type Subject = 'math' | 'science' | 'arabic' | 'coding'
+export type Subject = 'math' | 'science' | 'arabic' | 'coding' | 'islamic-studies'
 
 export type MathOperation = 'addition' | 'subtraction' | 'multiplication' | 'division'
 
@@ -52,6 +52,12 @@ export interface ProgressData {
   arabicProgress: {
     completedLessons: number
     totalTime: number
+  }
+  islamicProgress: {
+    quizzesCompleted: number
+    totalScore: number
+    totalQuestions: number
+    accuracy: number
   }
   recentSessions: GameSession[]
   lastActive: number
