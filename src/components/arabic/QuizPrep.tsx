@@ -519,16 +519,27 @@ function WriteItDialog({
   }, [open, word])
 
   const animateWordWriting = async () => {
-    const canvas = animationCanvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
     setShowAnimation(true)
     
+    await new Promise(resolve => setTimeout(resolve, 50))
+    
+    const canvas = animationCanvasRef.current
+    if (!canvas) {
+      setShowAnimation(false)
+      return
+    }
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      setShowAnimation(false)
+      return
+    }
+    
     const parent = canvas.parentElement
-    if (!parent) return
+    if (!parent) {
+      setShowAnimation(false)
+      return
+    }
 
     const rect = parent.getBoundingClientRect()
     const dpr = window.devicePixelRatio || 1
@@ -550,9 +561,6 @@ function WriteItDialog({
     const text = word.arabic
     const centerX = rect.width / 2
     const centerY = rect.height / 2
-
-    const textMetrics = ctx.measureText(text)
-    const textWidth = textMetrics.width
 
     for (let i = 0; i <= text.length; i++) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
