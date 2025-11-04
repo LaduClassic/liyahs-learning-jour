@@ -204,24 +204,24 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
   return (
     <>
       <Dialog open={showDifficultyDialog} onOpenChange={setShowDifficultyDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-center mb-2">Choose Your Challenge!</DialogTitle>
-            <DialogDescription className="text-center text-base">
+            <DialogTitle className="text-xl sm:text-2xl text-center mb-2">Choose Your Challenge!</DialogTitle>
+            <DialogDescription className="text-center text-sm sm:text-base">
               Pick your difficulty level to begin the quiz
             </DialogDescription>
           </DialogHeader>
           
-          <div className="flex flex-col gap-4 mt-4">
+          <div className="flex flex-col gap-3 sm:gap-4 mt-2 sm:mt-4">
             <Button
               onClick={() => handleDifficultySelect('easy')}
               size="lg"
               variant="outline"
-              className="h-auto py-6 flex flex-col items-center gap-2 hover:border-[#4ade80] hover:bg-[#4ade80]/10"
+              className="h-auto py-4 sm:py-6 flex flex-col items-center gap-2 hover:border-[#4ade80] hover:bg-[#4ade80]/10"
             >
-              <Sparkle size={40} weight="duotone" className="text-[#4ade80]" />
-              <div className="text-xl font-bold">Easy Mode</div>
-              <p className="text-sm text-muted-foreground">
+              <Sparkle size={32} weight="duotone" className="text-[#4ade80] sm:w-10 sm:h-10" />
+              <div className="text-lg sm:text-xl font-bold">Easy Mode</div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-snug px-2">
                 Questions appear in order - perfect for learning the Five Pillars sequence!
               </p>
             </Button>
@@ -230,11 +230,11 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
               onClick={() => handleDifficultySelect('challenging')}
               size="lg"
               variant="outline"
-              className="h-auto py-6 flex flex-col items-center gap-2 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
+              className="h-auto py-4 sm:py-6 flex flex-col items-center gap-2 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
             >
-              <Lightning size={40} weight="duotone" className="text-[#D4AF37]" />
-              <div className="text-xl font-bold">Challenging Mode</div>
-              <p className="text-sm text-muted-foreground">
+              <Lightning size={32} weight="duotone" className="text-[#D4AF37] sm:w-10 sm:h-10" />
+              <div className="text-lg sm:text-xl font-bold">Challenging Mode</div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-snug px-2">
                 Questions are shuffled - test your knowledge! Hope you know the order of the Five Pillars!
               </p>
             </Button>
