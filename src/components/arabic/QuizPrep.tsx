@@ -814,3 +814,81 @@ function FlashcardsMode({ wordIndex, setWordIndex }: { wordIndex: number; setWor
     </Card>
   )
 }
+
+              <canvas
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full touch-none cursor-crosshair"
+                onPointerDown={startDrawing}
+                onPointerMove={draw}
+                onPointerUp={stopDrawing}
+                onPointerLeave={stopDrawing}
+                onPointerCancel={stopDrawing}
+                style={{ touchAction: 'none' }}
+              />
+            </div>
+
+            <div className="text-center space-y-2">
+              <p className="text-lg sm:text-xl text-muted-foreground">
+                Use your stylus or finger to trace the Arabic letters
+              </p>
+              <p className="text-sm text-muted-foreground/70">
+                Watch the demo to see how the word is written, then practice on your own
+              </p>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function FlashcardsMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
+  const word = SPELLING_WORDS[wordIndex]
+  const [revealed, setRevealed] = useState(false)
+
+  const handlePrev = () => {
+    setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
+    setRevealed(false)
+  }
+
+  const handleNext = () => {
+    setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
+    setRevealed(false)
+  }
+
+  return (
+    <Card className="p-6 sm:p-8 md:p-12 w-full">
+      <div className="flex flex-col gap-6 sm:gap-8">
+        <div
+          className="text-5xl sm:text-6xl md:text-7xl text-center break-words"
+          style={{
+            fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+            direction: 'rtl'
+          }}
+        >
+          {word.arabic}
+        </div>
+
+        <div className="text-center flex flex-col gap-4">
+          <Button variant="secondary" size="lg" onClick={() => setRevealed(!revealed)} className="w-full sm:w-auto">
+            {revealed ? 'Hide' : 'Show'} phonetics
+          </Button>
+          {revealed && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xl sm:text-2xl font-mono text-primary"
+            >
+              {word.phonetic}
+            </motion.div>
+          )}
+        </div>
+
+        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
+          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev</Button>
+          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next</Button>
+        </div>
+      </div>
+    </Card>
+  )
+}
