@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { SPELLING_WORDS, clusterArabic, normalizeArabic, updateSpellingWords, SpellingWord } from '@/lib/arabicData'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QuizUploader } from '@/components/arabic/QuizUploader'
 import { useKV } from '@github/spark/hooks'
+import { X, Play } from '@phosphor-icons/react'
 
 type PrepMode = 'flashcards' | 'letter-order' | 'phonetic-match' | 'definition-match' | 'write-it'
 
@@ -415,14 +417,77 @@ function DefinitionMatchMode() {
 
 function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
   const word = SPELLING_WORDS[wordIndex]
+  const [showFullscreen, setShowFullscreen] = useState(false)
+
+  const handlePrev = () => {
+    setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
+  }
+
+  const handleNext = () => {
+    setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
+  }
+
+  return (
+    <>
+      <Card className="p-4 sm:p-6 md:p-8 w-full">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
+            <p className="text-center text-lg sm:text-xl font-mono text-primary font-bold">
+              {word.phonetic}
+            </p>
+            <p className="text-center text-base sm:text-lg text-muted-foreground">
+              {word.definition}
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center gap-4">
+            <Button
+              size="lg"
+              onClick={() => setShowFullscreen(true)}
+              className="w-full max-w-md gap-2"
+            >
+              Open Writing Canvas
+            </Button>
+            <p className="text-sm text-muted-foreground text-center">
+              Click to open full-screen writing area with demonstrations
+            </p>
+          </div>
+
+          <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
+            <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev Word</Button>
+            <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next Word</Button>
+          </div>
+        </div>
+      </Card>
+
+      <WriteItDialog
+        open={showFullscreen}
+        onOpenChange={setShowFullscreen}
+        word={word}
+      />
+    </>
+  )
+}
+
+function WriteItDialog({ 
+  open, 
+  onOpenChange, 
+  word 
+}: { 
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  word: SpellingWord
+}) {
   const [showTrace, setShowTrace] = useState(true)
+  const [showAnimation, setShowAnimation] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const animationCanvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasDrawn, setHasDrawn] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas || !open) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -443,7 +508,7 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
       ctx.scale(dpr, dpr)
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
-      ctx.lineWidth = 3
+      ctx.lineWidth = 4
       ctx.strokeStyle = 'oklch(0.60 0.19 250)'
     }
 
@@ -451,7 +516,67 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
     window.addEventListener('resize', resizeCanvas)
 
     return () => window.removeEventListener('resize', resizeCanvas)
-  }, [wordIndex])
+  }, [open, word])
+
+  const animateWordWriting = async () => {
+    const canvas = animationCanvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    setShowAnimation(true)
+    
+    const parent = canvas.parentElement
+    if (!parent) return
+
+    const rect = parent.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    
+    canvas.width = rect.width * dpr
+    canvas.height = rect.height * dpr
+    
+    canvas.style.width = `${rect.width}px`
+    canvas.style.height = `${rect.height}px`
+    
+    ctx.scale(dpr, dpr)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    ctx.font = `bold ${Math.min(rect.width * 0.3, 200)}px 'Scheherazade New', 'Noto Naskh Arabic', sans-serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = 'oklch(0.60 0.19 250)'
+
+    const text = word.arabic
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+
+    const textMetrics = ctx.measureText(text)
+    const textWidth = textMetrics.width
+
+    for (let i = 0; i <= text.length; i++) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      const partialText = text.substring(0, i)
+      ctx.fillText(partialText, centerX, centerY)
+
+      if (i < text.length) {
+        const currentMetrics = ctx.measureText(partialText)
+        const cursorX = centerX + currentMetrics.width / 2 + 5
+        
+        ctx.beginPath()
+        ctx.arc(cursorX, centerY, 8, 0, Math.PI * 2)
+        ctx.fillStyle = 'oklch(0.85 0.16 90)'
+        ctx.fill()
+        ctx.fillStyle = 'oklch(0.60 0.19 250)'
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 400))
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setShowAnimation(false)
+  }
 
   const getCoordinates = (e: React.TouchEvent | React.MouseEvent | React.PointerEvent) => {
     const canvas = canvasRef.current
@@ -518,66 +643,98 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
     setHasDrawn(false)
   }
 
-  const handlePrev = () => {
-    setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
+  const handleClose = () => {
     clearCanvas()
     setShowTrace(true)
-  }
-
-  const handleNext = () => {
-    setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
-    clearCanvas()
-    setShowTrace(true)
+    setShowAnimation(false)
+    onOpenChange(false)
   }
 
   return (
-    <Card className="p-4 sm:p-6 md:p-8 w-full">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
-          <p className="text-center text-lg sm:text-xl font-mono text-primary font-bold">
-            {word.phonetic}
-          </p>
-          <p className="text-center text-base sm:text-lg text-muted-foreground">
-            {word.definition}
-          </p>
-        </div>
-
-        <div className="bg-muted/30 rounded-2xl p-4 sm:p-6 w-full">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <p className="text-center flex-1 text-xs sm:text-sm text-muted-foreground uppercase tracking-wide font-semibold">
-                Use your stylus to trace
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent 
+        className="max-w-full w-screen h-screen max-h-screen p-0 gap-0 border-0"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={handleClose}
+      >
+        <div className="flex flex-col h-full w-full bg-background">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
+                Practice Writing
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                <span className="font-mono font-bold">{word.phonetic}</span> — {word.definition}
               </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClose}
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full"
+            >
+              <X size={24} weight="bold" />
+            </Button>
+          </div>
+
+          <div className="flex-1 flex flex-col p-4 sm:p-6 md:p-8 gap-4 sm:gap-6 overflow-y-auto">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  variant="default"
+                  size="lg"
+                  onClick={animateWordWriting}
+                  disabled={showAnimation}
+                  className="gap-2"
+                >
+                  <Play size={20} weight="fill" />
+                  Watch Demo
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setShowTrace(!showTrace)}
+                >
+                  {showTrace ? 'Hide' : 'Show'} Guide
+                </Button>
+              </div>
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowTrace(!showTrace)}
-                className="text-xs"
+                variant="secondary"
+                size="lg"
+                onClick={clearCanvas}
+                disabled={!hasDrawn}
               >
-                {showTrace ? 'Hide' : 'Show'}
+                Clear Canvas
               </Button>
             </div>
-            
+
             <div 
-              className="relative w-full min-h-[200px] sm:min-h-[250px] md:min-h-[300px] bg-background rounded-xl border-2 border-dashed border-primary/30 overflow-hidden touch-none"
+              className="relative flex-1 min-h-[400px] bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden touch-none"
               dir="rtl"
             >
-              {showTrace && (
+              {showTrace && !showAnimation && (
                 <div
-                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4"
+                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-8"
                 >
                   <div
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl whitespace-nowrap"
+                    className="text-[clamp(4rem,15vw,12rem)] whitespace-nowrap"
                     style={{
                       fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
-                      color: 'oklch(0.60 0.19 250 / 0.25)',
-                      textShadow: '0 0 1px oklch(0.60 0.19 250 / 0.4)',
-                      WebkitTextStroke: '1px oklch(0.60 0.19 250 / 0.3)'
+                      color: 'oklch(0.60 0.19 250 / 0.2)',
+                      textShadow: '0 0 2px oklch(0.60 0.19 250 / 0.3)',
+                      WebkitTextStroke: '2px oklch(0.60 0.19 250 / 0.25)'
                     }}
                   >
                     {word.arabic}
                   </div>
                 </div>
+              )}
+
+              {showAnimation && (
+                <canvas
+                  ref={animationCanvasRef}
+                  className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                />
               )}
               
               <canvas
@@ -592,25 +749,18 @@ function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIn
               />
             </div>
 
-            <div className="flex gap-2 justify-end">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clearCanvas}
-                disabled={!hasDrawn}
-              >
-                Clear
-              </Button>
+            <div className="text-center space-y-2">
+              <p className="text-lg sm:text-xl text-muted-foreground">
+                Use your stylus or finger to trace the Arabic letters
+              </p>
+              <p className="text-sm text-muted-foreground/70">
+                Watch the demo to see how the word is written, then practice on your own
+              </p>
             </div>
           </div>
         </div>
-
-        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
-          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev Word</Button>
-          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next Word</Button>
-        </div>
-      </div>
-    </Card>
+      </DialogContent>
+    </Dialog>
   )
 }
 
