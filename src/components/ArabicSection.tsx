@@ -6,7 +6,7 @@ import { House, Question, BookOpen, Flask, NumberSquareOne, Code } from '@phosph
 import { LettersQuiz } from '@/components/arabic/LettersQuiz'
 import { QuizPrep } from '@/components/arabic/QuizPrep'
 import { LetterReference } from '@/components/arabic/LetterReference'
-
+import { SectionLayout } from '@/components/layouts/SectionLayout'
 interface ArabicSectionProps {
   onBack: () => void
 }
@@ -16,7 +16,8 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
   const [showSubjectSelector, setShowSubjectSelector] = useState(false)
 
   const handleSubjectClick = () => {
-    setShowSubjectSelector(false)
+    setShowSubjectSelector(true)
+    
     onBack()
   }
 
@@ -27,7 +28,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
           <Button
             variant="outline"
             size="lg"
-            onClick={() => setShowSubjectSelector(!showSubjectSelector)}
+              onClick={handleSubjectClick}
             className="gap-2 w-full sm:w-auto"
           >
             <House size={24} />
