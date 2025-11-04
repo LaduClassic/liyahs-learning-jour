@@ -34,6 +34,7 @@ export function LetterReference({ open, onOpenChange, initialIndex = 0 }: Letter
         className="max-w-4xl bg-slate-900 text-white border-slate-700"
         onKeyDown={handleKeyDown}
       >
+      
         <DialogHeader>
           <DialogTitle className="text-center text-2xl tracking-widest uppercase text-white/80">
             Letter Reference

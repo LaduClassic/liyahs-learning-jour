@@ -221,9 +221,7 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
             >
               <Sparkle size={28} weight="duotone" className="text-[#4ade80] sm:w-10 sm:h-10" />
               <div className="text-base sm:text-xl font-bold">Easy Mode</div>
-              <p className="text-[10px] sm:text-sm text-muted-foreground leading-snug px-2 text-center">
-                Questions appear in order - perfect for learning the Five Pillars sequence!
-              </p>
+              <p className="text-pretty">Questions appear in order - perfect for learning the Five Pillars sequence!</p>
             </Button>
 
             <Button
@@ -234,14 +232,13 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
             >
               <Lightning size={28} weight="duotone" className="text-[#D4AF37] sm:w-10 sm:h-10" />
               <div className="text-base sm:text-xl font-bold">Challenging Mode</div>
-              <p className="text-[10px] sm:text-sm text-muted-foreground leading-snug px-2 text-center">
+              <p className="text-pretty">
                 Questions are shuffled - test your knowledge! Hope you know the order of the Five Pillars!
               </p>
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-
       <div className="min-h-screen bg-gradient-to-br from-[oklch(0.85_0.08_50)] via-background to-[oklch(0.90_0.06_80)] p-6">
         <SectionHeader title="Islamic Studies Quiz" emoji="🕌" onBack={onBack} titleColor="#D4AF37" />
 
@@ -390,5 +387,5 @@ export function IslamicSection({ onBack, onQuizComplete }: IslamicSectionProps) 
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -750,9 +750,7 @@ function WriteItDialog({
             </div>
 
             <div className="text-center space-y-2">
-              <p className="text-lg sm:text-xl text-muted-foreground">
-                Use your stylus or finger to trace the Arabic letters
-              </p>
+              <p className="text-pretty">Use your stylus or finger to trace the Arabic letters</p>
               <p className="text-sm text-muted-foreground/70">
                 Watch the demo to see how the word is written, then practice on your own
               </p>
@@ -761,7 +759,7 @@ function WriteItDialog({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function FlashcardsMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
