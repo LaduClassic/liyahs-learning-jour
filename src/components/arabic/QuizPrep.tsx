@@ -496,7 +496,8 @@ function WriteItDialog({
       const parent = canvas.parentElement
       if (!parent) return
 
-      const rect = parent.getBoundingClientRect()
+      // Get the canvas's own bounding rect to account for its actual rendered size
+      const rect = canvas.getBoundingClientRect()
       const dpr = window.devicePixelRatio || 1
       
       canvas.width = rect.width * dpr
@@ -535,13 +536,8 @@ function WriteItDialog({
       return
     }
     
-    const parent = canvas.parentElement
-    if (!parent) {
-      setShowAnimation(false)
-      return
-    }
-
-    const rect = parent.getBoundingClientRect()
+    // Get the canvas's own bounding rect to account for its actual rendered size
+    const rect = canvas.getBoundingClientRect()
     const dpr = window.devicePixelRatio || 1
     
     canvas.width = rect.width * dpr
@@ -551,7 +547,8 @@ function WriteItDialog({
     canvas.style.height = `${rect.height}px`
     
     ctx.scale(dpr, dpr)
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // Use logical dimensions since context is scaled
+    ctx.clearRect(0, 0, rect.width, rect.height)
 
     ctx.font = `bold ${Math.min(rect.width * 0.3, 200)}px 'Scheherazade New', 'Noto Naskh Arabic', sans-serif`
     ctx.textAlign = 'center'
@@ -563,7 +560,8 @@ function WriteItDialog({
     const centerY = rect.height / 2
 
     for (let i = 0; i <= text.length; i++) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      // Use logical dimensions since context is scaled
+      ctx.clearRect(0, 0, rect.width, rect.height)
       
       const partialText = text.substring(0, i)
       ctx.fillText(partialText, centerX, centerY)
@@ -647,7 +645,9 @@ function WriteItDialog({
     const ctx = canvas?.getContext('2d')
     if (!ctx || !canvas) return
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // Get logical dimensions from the canvas's own bounding rect
+    const rect = canvas.getBoundingClientRect()
+    ctx.clearRect(0, 0, rect.width, rect.height)
     setHasDrawn(false)
   }
 
