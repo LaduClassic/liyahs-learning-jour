@@ -484,6 +484,7 @@ function WriteItDialog({
   const animationCanvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasDrawn, setHasDrawn] = useState(false)
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -493,18 +494,11 @@ function WriteItDialog({
     if (!ctx) return
 
     const resizeCanvas = () => {
-      const parent = canvas.parentElement
-      if (!parent) return
-
-      // Get the canvas's own bounding rect to account for its actual rendered size
       const rect = canvas.getBoundingClientRect()
       const dpr = window.devicePixelRatio || 1
       
       canvas.width = rect.width * dpr
       canvas.height = rect.height * dpr
-      
-      canvas.style.width = `${rect.width}px`
-      canvas.style.height = `${rect.height}px`
       
       ctx.scale(dpr, dpr)
       ctx.lineCap = 'round'
@@ -536,18 +530,13 @@ function WriteItDialog({
       return
     }
     
-    // Get the canvas's own bounding rect to account for its actual rendered size
     const rect = canvas.getBoundingClientRect()
     const dpr = window.devicePixelRatio || 1
     
     canvas.width = rect.width * dpr
     canvas.height = rect.height * dpr
     
-    canvas.style.width = `${rect.width}px`
-    canvas.style.height = `${rect.height}px`
-    
     ctx.scale(dpr, dpr)
-    // Use logical dimensions since context is scaled
     ctx.clearRect(0, 0, rect.width, rect.height)
 
     ctx.font = `bold ${Math.min(rect.width * 0.3, 200)}px 'Scheherazade New', 'Noto Naskh Arabic', sans-serif`
@@ -560,7 +549,6 @@ function WriteItDialog({
     const centerY = rect.height / 2
 
     for (let i = 0; i <= text.length; i++) {
-      // Use logical dimensions since context is scaled
       ctx.clearRect(0, 0, rect.width, rect.height)
       
       const partialText = text.substring(0, i)
@@ -584,32 +572,22 @@ function WriteItDialog({
     setShowAnimation(false)
   }
 
-  const getCoordinates = (e: React.TouchEvent | React.MouseEvent | React.PointerEvent) => {
+  const getCoordinates = (e: React.PointerEvent) => {
     const canvas = canvasRef.current
     if (!canvas) return null
 
     const rect = canvas.getBoundingClientRect()
     
-    let clientX: number, clientY: number
-
-    if ('touches' in e && e.touches.length > 0) {
-      clientX = e.touches[0].clientX
-      clientY = e.touches[0].clientY
-    } else if ('clientX' in e) {
-      clientX = e.clientX
-      clientY = e.clientY
-    } else {
-      return null
-    }
-
     return {
-      x: clientX - rect.left,
-      y: clientY - rect.top
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
     }
   }
 
   const startDrawing = (e: React.PointerEvent) => {
     e.preventDefault()
+    e.stopPropagation()
+    
     const coords = getCoordinates(e)
     if (!coords) return
 
@@ -618,6 +596,7 @@ function WriteItDialog({
 
     setIsDrawing(true)
     setHasDrawn(true)
+    lastPointRef.current = coords
     ctx.beginPath()
     ctx.moveTo(coords.x, coords.y)
   }
@@ -625,19 +604,26 @@ function WriteItDialog({
   const draw = (e: React.PointerEvent) => {
     if (!isDrawing) return
     e.preventDefault()
+    e.stopPropagation()
 
     const coords = getCoordinates(e)
-    if (!coords) return
+    if (!coords || !lastPointRef.current) return
 
     const ctx = canvasRef.current?.getContext('2d')
     if (!ctx) return
 
     ctx.lineTo(coords.x, coords.y)
     ctx.stroke()
+    lastPointRef.current = coords
   }
 
-  const stopDrawing = () => {
+  const stopDrawing = (e?: React.PointerEvent) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
     setIsDrawing(false)
+    lastPointRef.current = null
   }
 
   const clearCanvas = () => {
@@ -645,7 +631,6 @@ function WriteItDialog({
     const ctx = canvas?.getContext('2d')
     if (!ctx || !canvas) return
 
-    // Get logical dimensions from the canvas's own bounding rect
     const rect = canvas.getBoundingClientRect()
     ctx.clearRect(0, 0, rect.width, rect.height)
     setHasDrawn(false)
@@ -659,19 +644,19 @@ function WriteItDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent 
-        className="max-w-full w-screen h-screen max-h-screen p-0 gap-0 border-0"
+        className="max-w-full w-screen h-screen max-h-screen p-0 gap-0 border-0 flex flex-col"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={handleClose}
       >
         <div className="flex flex-col h-full w-full bg-background">
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
+            <div className="flex flex-col gap-1 flex-1 min-w-0">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary truncate">
                 Practice Writing
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">
                 <span className="font-mono font-bold">{word.phonetic}</span> — {word.definition}
               </p>
             </div>
@@ -679,53 +664,56 @@ function WriteItDialog({
               variant="ghost"
               size="icon"
               onClick={handleClose}
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full"
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2"
+              aria-label="Close"
             >
               <X size={24} weight="bold" />
             </Button>
           </div>
 
-          <div className="flex-1 flex flex-col p-4 sm:p-6 md:p-8 gap-4 sm:gap-6 overflow-y-auto">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0">
+            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="default"
-                  size="lg"
+                  size="sm"
                   onClick={animateWordWriting}
                   disabled={showAnimation}
-                  className="gap-2"
+                  className="gap-2 text-xs sm:text-sm"
                 >
-                  <Play size={20} weight="fill" />
+                  <Play size={18} weight="fill" />
                   Watch Demo
                 </Button>
                 <Button
                   variant="outline"
-                  size="lg"
+                  size="sm"
                   onClick={() => setShowTrace(!showTrace)}
+                  className="text-xs sm:text-sm"
                 >
                   {showTrace ? 'Hide' : 'Show'} Guide
                 </Button>
               </div>
               <Button
                 variant="secondary"
-                size="lg"
+                size="sm"
                 onClick={clearCanvas}
                 disabled={!hasDrawn}
+                className="text-xs sm:text-sm"
               >
                 Clear Canvas
               </Button>
             </div>
 
             <div 
-              className="relative flex-1 min-h-[400px] bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden touch-none"
+              className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden touch-none min-h-0"
               dir="rtl"
             >
               {showTrace && !showAnimation && (
                 <div
-                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-8"
+                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8"
                 >
                   <div
-                    className="text-[clamp(4rem,15vw,12rem)] whitespace-nowrap"
+                    className="text-[clamp(3rem,12vw,10rem)] whitespace-nowrap"
                     style={{
                       fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
                       color: 'oklch(0.60 0.19 250 / 0.2)',
@@ -757,9 +745,9 @@ function WriteItDialog({
               />
             </div>
 
-            <div className="text-center space-y-2">
-              <p className="text-pretty">Use your stylus or finger to trace the Arabic letters</p>
-              <p className="text-sm text-muted-foreground/70">
+            <div className="text-center space-y-1 shrink-0">
+              <p className="text-xs sm:text-sm text-pretty">Use your stylus or finger to trace the Arabic letters</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground/70">
                 Watch the demo to see how the word is written, then practice on your own
               </p>
             </div>
