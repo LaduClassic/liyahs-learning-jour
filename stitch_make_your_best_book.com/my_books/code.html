@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Books</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "card-light": "#ffffff",
+              "card-dark": "#1c2127",
+              "text-light-primary": "#101922",
+              "text-dark-primary": "#ffffff",
+              "text-light-secondary": "#6b7280",
+              "text-dark-secondary": "#9dabb9",
+              "button-light": "#e5e7eb",
+              "button-dark": "#283039",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 p-4 pb-2 justify-between backdrop-blur-sm">
+<div class="flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary" style="font-size: 24px;">menu</span>
+</div>
+<h1 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-text-light-primary dark:text-text-dark-primary">My Books</h1>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 text-text-light-primary dark:text-text-dark-primary hover:bg-black/5 dark:hover:bg-white/5">
+<span class="material-symbols-outlined" style="font-size: 24px;">search</span>
+</button>
+</div>
+</div>
+<!-- Book List -->
+<main class="flex flex-col flex-1 px-4 pt-4 pb-24 space-y-4">
+<!-- Book Card 1 -->
+<div class="flex items-stretch justify-between gap-4 rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm">
+<div class="flex flex-[2_2_0px] flex-col gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Science Fiction - Draft</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-tight">The Last Nebula</p>
+<div class="w-full mt-1">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal mb-1">45% Complete</p>
+<div class="w-full bg-button-light dark:bg-button-dark rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-primary text-white text-sm font-medium leading-normal">
+<span class="truncate">Continue</span>
+</button>
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-button-light dark:bg-button-dark text-text-light-primary dark:text-text-dark-primary text-sm font-medium leading-normal">
+<span class="truncate">Details</span>
+</button>
+</div>
+</div>
+<div class="w-24 bg-center bg-no-repeat aspect-[2/3] bg-cover rounded-md flex-none" data-alt="Cover art for The Last Nebula, depicting a swirling galaxy." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMXcRxIrcvV1Fbb5_LvRFfejnAKjMbRoJzpZ8wVN_JAPag__OdA8HCboXIRmWnePOWwbrqdAIpi-a0tDf6Y5WsBqwdhvc-X54dMFe8FcNXBE2JNaxwsLifrQqp5kaEb2lKIwOD-x_tKP4QYh97GdZ1EhZSQbW2nIHJ6JvilgUMLhCkloU2NWA0YlqWF5GCwdJw-OB3Xtdtpo1wxIbOmKnZHH3LQNeVsk_xRbS7Kj3sPeNa6NU3DWfrzRv797YbhIPDkg3LrQNeSsM");'></div>
+</div>
+<!-- Book Card 2 -->
+<div class="flex items-stretch justify-between gap-4 rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm">
+<div class="flex flex-[2_2_0px] flex-col gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Fantasy - Published</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-tight">Chronicles of Aethel</p>
+<div class="w-full mt-1">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal mb-1">100% Complete</p>
+<div class="w-full bg-button-light dark:bg-button-dark rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-button-light dark:bg-button-dark text-text-light-primary dark:text-text-dark-primary text-sm font-medium leading-normal">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+<div class="w-24 bg-center bg-no-repeat aspect-[2/3] bg-cover rounded-md flex-none" data-alt="Cover art for Chronicles of Aethel, showing a medieval castle on a hill." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAJoxYlG0rhFsRKMf16Qg_OrxkMQiQOfDQ3WKMK_8WdJbWE-jFXXBrKPcwiCR0VrkIz-4z4gvKDBc3I2i_NY6ewBDXxAXZ_vwPsgS9DQ2rgBSjvttD7dTC6KqcwPLM0Cc26mX0eS_zzcn1Jp82ic3AMP8BAu58yJil1SmGXGUSbPBOyI2HLT2WKcxVuEZAjQSXMakAt485YRM-PLGCQb-pOCJKEjxbSbKdWapdn3am0f8FvpXb7pEz1gNf51zHQMSIX6XpRZB1TYr0");'></div>
+</div>
+<!-- Book Card 3 -->
+<div class="flex items-stretch justify-between gap-4 rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm">
+<div class="flex flex-[2_2_0px] flex-col gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Mystery - Draft</p>
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-tight">Shadows of the Pier</p>
+<div class="w-full mt-1">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-xs font-normal leading-normal mb-1">15% Complete</p>
+<div class="w-full bg-button-light dark:bg-button-dark rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 15%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-primary text-white text-sm font-medium leading-normal">
+<span class="truncate">Continue</span>
+</button>
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-button-light dark:bg-button-dark text-text-light-primary dark:text-text-dark-primary text-sm font-medium leading-normal">
+<span class="truncate">Details</span>
+</button>
+</div>
+</div>
+<div class="w-24 bg-center bg-no-repeat aspect-[2/3] bg-cover rounded-md flex-none" data-alt="Cover art for Shadows of the Pier, featuring a foggy pier at night." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCi1NPCzyXnU20YRGhc2TWCL9ppZeF2jkByl16ES3v7uZcDwe9DKdlgioB8erm6oIgD5UpdtyB2kLt7dCwthFJKcrEUAxYk5yiRTplmI-gaHuV4dFxhjMC3uBkcAVONiM9hPaMUpSom5RoSPp9R7ku5zuuw9XUyUuZWZVkvdCoXhMmgpY4FR_il7amSUMVBPQNkSAFHnx8vOziHKRIO7qxmjV1YStNondpGf9YUS2m-cVts0hOX8c8T3kwJqEzkTSFEYZjaLalT7aw");'></div>
+</div>
+</main>
+<!-- Empty State Example (commented out for demonstration)
+        <div class="flex flex-col flex-1 items-center justify-center px-4 py-6">
+            <div class="flex flex-col items-center gap-6">
+                <div class="bg-center bg-no-repeat aspect-square bg-contain w-full max-w-[240px]" data-alt="Illustration of a person sitting and writing in a notebook." style='background-image: url("https://cdni.iconscout.com/illustration/premium/thumb/content-writing-5718712-4786482.png?f=webp");'></div>
+                <div class="flex max-w-[480px] flex-col items-center gap-2">
+                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">Your Next Story Awaits</p>
+                    <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal max-w-[480px] text-center">Tap the '+' button to start your first book.</p>
+                </div>
+            </div>
+        </div>
+        -->
+<!-- Floating Action Button -->
+<div class="fixed bottom-6 right-6">
+<button class="flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined" style="font-size: 28px;">add</span>
+</button>
+</div>
+</div>
+</body></html>

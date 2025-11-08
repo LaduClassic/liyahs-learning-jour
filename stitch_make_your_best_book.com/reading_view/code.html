@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Book Reader UI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#1754cf",
+              "background-light": "#f6f6f8",
+              "background-dark": "#111621",
+            },
+            fontFamily: {
+              "display": ["Lexend", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark text-[#333333] dark:text-[#E0E0E0] group/design-root overflow-hidden">
+<!-- Top App Bar -->
+<header class="absolute top-0 left-0 right-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm transition-opacity duration-300">
+<div class="flex items-center p-4">
+<button aria-label="Back" class="text-[#6c757d] dark:text-[#8A9A9A] flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="ml-2 flex-1 text-center">
+<h1 class="font-semibold leading-tight tracking-tight text-[#333333] dark:text-[#E0E0E0]">The Silent Patient</h1>
+<p class="text-sm text-[#6c757d] dark:text-[#8A9A9A]">Alex Michaelides</p>
+</div>
+<button aria-label="Settings" class="text-[#6c757d] dark:text-[#8A9A9A] flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5">
+<span class="material-symbols-outlined text-2xl">tune</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 px-6 pt-28 pb-32">
+<div class="space-y-6">
+<p class="text-base font-normal leading-relaxed text-justify">
+                    Alicia Berenson’s life is seemingly perfect. A famous painter married to an in-demand fashion photographer, she lives in a grand house with big windows overlooking a park in one of London’s most desirable areas. One evening her husband Gabriel returns home late from a fashion shoot, and Alicia shoots him five times in the face, and then never speaks another word.
+                </p>
+<p class="text-base font-normal leading-relaxed text-justify">
+                    Alicia’s refusal to talk, or give any kind of explanation, turns a domestic tragedy into something far grander, a mystery that captures the public imagination and casts Alicia into notoriety. The price of her art skyrockets, and she, the silent patient, is hidden away from the tabloids and spotlight at the Grove, a secure forensic unit in North London.
+                </p>
+<p class="text-base font-normal leading-relaxed text-justify">
+                    Theo Faber is a criminal psychotherapist who has waited a long time for the opportunity to work with Alicia. His determination to get her to talk and unravel the mystery of why she shot her husband takes him down a twisting path into his own motivations—a search for the truth that threatens to consume him....
+                </p>
+</div>
+</main>
+<!-- Gesture Areas (Conceptual) -->
+<div aria-label="Previous page" class="absolute inset-y-0 left-0 w-1/4"></div>
+<div aria-label="Next page" class="absolute inset-y-0 right-0 w-1/4"></div>
+<div aria-label="Toggle UI visibility" class="absolute inset-y-0 left-1/4 right-1/4"></div>
+<!-- Bottom Footer Bar -->
+<footer class="absolute bottom-0 left-0 right-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm transition-opacity duration-300">
+<div class="flex flex-col gap-3 p-4 pt-3">
+<div class="flex items-center justify-between">
+<p class="text-sm font-medium text-[#6c757d] dark:text-[#8A9A9A]">Page 15 of 320</p>
+<p class="text-sm font-normal text-[#6c757d] dark:text-[#8A9A9A]">5%</p>
+</div>
+<div class="h-2 w-full rounded-full bg-black/10 dark:bg-white/10">
+<div class="h-2 rounded-full bg-[#6c757d] dark:bg-[#8A9A9A]" style="width: 5%;"></div>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Book Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Lora:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+      .font-lora {
+        font-family: 'Lora', serif;
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#F8F8F4",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body>
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display" style='font-family: "Inter", "Noto Sans", sans-serif;'>
+<!-- Top App Bar -->
+<div class="fixed top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full text-stone-800 dark:text-stone-200 hover:bg-black/5 dark:hover:bg-white/5">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full text-stone-800 dark:text-stone-200 hover:bg-black/5 dark:hover:bg-white/5">
+<span class="material-symbols-outlined text-2xl">bookmark_add</span>
+</button>
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full text-stone-800 dark:text-stone-200 hover:bg-black/5 dark:hover:bg-white/5">
+<span class="material-symbols-outlined text-2xl">share</span>
+</button>
+</div>
+</div>
+<main class="flex-grow pt-20 pb-40">
+<!-- Header Image -->
+<div class="px-4">
+<div class="w-full h-96 bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl shadow-lg" data-alt="Cover art for The Last Cartographer, showing an ancient map and a compass." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCOvHvNJlHHASWizcU1A9xksRgtcKGpLQOCraqUnnBsDHdFLkhGV-__vDcwMbPhX1HU4V_wfBPsaD8SO8GZt7KCwZxi0OBRNYhWN7qBGCoFWgzt1Chs-FziPyrY0M2VBXwx2IoNqvsyQydWlexiCR5ngO26b-FBVcmijC9-4pZhtTtHQ2982dDlYG9heOd7HzPPeXfMFxx0aWjJXxLBobebNPlcc09tT4YgOKZZuxXhGpPFvjHadr0qNszgiM35Cic0oYtfBzYH7I4");'></div>
+</div>
+<!-- Headline Text -->
+<h1 class="font-lora text-stone-900 dark:text-stone-100 tracking-tight text-4xl font-bold leading-tight px-4 text-left pb-1 pt-8">The Last Cartographer</h1>
+<!-- Body Text (Author) -->
+<p class="text-stone-700 dark:text-stone-300 text-lg font-medium leading-normal pt-1 px-4">By Amelia Vance</p>
+<!-- Meta Text -->
+<p class="text-stone-500 dark:text-stone-400 text-sm font-normal leading-normal pb-3 pt-3 px-4">Fantasy | In Progress | Last updated: 2 days ago</p>
+<!-- Synopsis/Description -->
+<div class="mt-4 border-t border-stone-200 dark:border-stone-800">
+<p class="text-stone-600 dark:text-stone-400 text-base font-normal leading-relaxed pt-6 pb-3 px-4">
+                    In a world where magic is fading and the maps of old no longer reflect the shifting lands, a young apprentice named Elara discovers she holds the last spark of true cartography. Gifted with the ability to see the land not as it is, but as it was and could be, she is hunted by a shadowy empire that seeks to control all knowledge and rewrite history in their image.
+                </p>
+<p class="text-stone-600 dark:text-stone-400 text-base font-normal leading-relaxed pt-2 pb-3 px-4">
+                    Forced to flee her home, Elara embarks on a perilous journey across forgotten kingdoms and treacherous terrains. With a stoic guardian and a cynical rogue as her only companions, she must decipher the secrets of ancient maps, outwit relentless pursuers, and decide whether to restore the world to its former glory or chart a new future entirely. "The Last Cartographer" is a tale of adventure, loss, and the power of knowing where you stand.
+                </p>
+</div>
+</main>
+<!-- Fixed Action Buttons -->
+<div class="fixed bottom-0 left-0 right-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-4 border-t border-stone-200 dark:border-stone-800">
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex w-full items-center justify-center rounded-lg h-12 px-6 text-base font-bold bg-stone-200/50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-stone-200 dark:hover:bg-stone-700">
+                    Edit Manuscript
+                </button>
+<button class="flex w-full items-center justify-center rounded-lg h-12 px-6 text-base font-bold bg-primary text-white hover:bg-primary/90">
+                    Start Reading
+                </button>
+</div>
+</div>
+</div>
+</body></html>
