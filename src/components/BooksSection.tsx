@@ -133,6 +133,25 @@ export function BooksSection({ onBack }: BooksSectionProps) {
     console.log(`Exporting ${selectedBook.title} as ${format}`)
   }
 
+  const handleDeleteBook = (bookId: string) => {
+    const bookToDelete = books?.find(book => book.id === bookId)
+    
+    if (!bookToDelete) return
+
+    if (window.confirm(`Are you sure you want to delete "${bookToDelete.title}"? This action cannot be undone.`)) {
+      setBooks(currentBooks => currentBooks?.filter(book => book.id !== bookId) || [])
+      
+      if (selectedBookId === bookId) {
+        setSelectedBookId(null)
+        setCurrentView('list')
+      }
+      
+      toast.success('Book deleted', {
+        description: `"${bookToDelete.title}" has been removed from your library`
+      })
+    }
+  }
+
   const handleBackToList = () => {
     setCurrentView('list')
     setSelectedBookId(null)
@@ -177,6 +196,7 @@ export function BooksSection({ onBack }: BooksSectionProps) {
         onCreate={() => setShowCreateDialog(true)}
         onViewBook={handleViewBook}
         onEditBook={handleEditBook}
+        onDeleteBook={handleDeleteBook}
       />
       <CreateBookDialog
         open={showCreateDialog}

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
-import { MagnifyingGlass, Plus, ArrowLeft, BookOpen, PencilSimple } from '@phosphor-icons/react'
+import { MagnifyingGlass, Plus, ArrowLeft, BookOpen, PencilSimple, Trash } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
 interface MyBooksScreenProps {
@@ -13,9 +13,10 @@ interface MyBooksScreenProps {
   onCreate: () => void
   onViewBook: (bookId: string) => void
   onEditBook: (bookId: string) => void
+  onDeleteBook: (bookId: string) => void
 }
 
-export function MyBooksScreen({ books, onBack, onCreate, onViewBook, onEditBook }: MyBooksScreenProps) {
+export function MyBooksScreen({ books, onBack, onCreate, onViewBook, onEditBook, onDeleteBook }: MyBooksScreenProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredBooks = books.filter(book =>
@@ -119,6 +120,14 @@ export function MyBooksScreen({ books, onBack, onCreate, onViewBook, onEditBook 
                     >
                       <BookOpen className="mr-2 h-4 w-4" />
                       {book.status === 'published' ? 'Read' : 'Details'}
+                    </Button>
+                    <Button
+                      onClick={() => onDeleteBook(book.id)}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
