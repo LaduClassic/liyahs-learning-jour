@@ -505,13 +505,17 @@ function WriteItDialog({
       ctx.lineJoin = 'round'
       ctx.lineWidth = 4
       ctx.strokeStyle = 'oklch(0.60 0.19 250)'
+      
+      canvas.style.width = `${rect.width}px`
+      canvas.style.height = `${rect.height}px`
     }
 
+    setTimeout(resizeCanvas, 100)
     resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
 
     return () => window.removeEventListener('resize', resizeCanvas)
-  }, [open, word])
+  }, [open])
 
   const animateWordWriting = async () => {
     setShowAnimation(true)
@@ -636,22 +640,20 @@ function WriteItDialog({
     setHasDrawn(false)
   }
 
-  const handleClose = () => {
-    clearCanvas()
-    setShowTrace(true)
-    setShowAnimation(false)
-    onOpenChange(false)
-  }
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
       <DialogContent 
-        className="max-w-full w-screen h-screen max-h-screen p-0 gap-0 border-0 flex flex-col"
+        className="!max-w-none !w-screen !h-screen !max-h-screen !p-0 !gap-0 !border-0 !rounded-none !translate-x-0 !translate-y-0 !top-0 !left-0 flex flex-col overflow-hidden"
         onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={handleClose}
+        onEscapeKeyDown={() => {
+          clearCanvas()
+          setShowTrace(true)
+          setShowAnimation(false)
+          onOpenChange(false)
+        }}
       >
-        <div className="flex flex-col h-full w-full bg-background">
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
+        <div className="flex flex-col h-screen w-screen bg-background overflow-hidden">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0 z-20">
             <div className="flex flex-col gap-1 flex-1 min-w-0">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary truncate">
                 Practice Writing
@@ -663,21 +665,32 @@ function WriteItDialog({
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleClose}
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                clearCanvas()
+                setShowTrace(true)
+                setShowAnimation(false)
+                onOpenChange(false)
+              }}
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2 hover:bg-destructive/20 hover:text-destructive z-30"
               aria-label="Close"
             >
               <X size={24} weight="bold" />
             </Button>
           </div>
 
-          <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0">
-            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0">
+          <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0 z-10">
+            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0 z-20">
               <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={animateWordWriting}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    animateWordWriting()
+                  }}
                   disabled={showAnimation}
                   className="gap-2 text-xs sm:text-sm"
                 >
@@ -687,7 +700,11 @@ function WriteItDialog({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowTrace(!showTrace)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setShowTrace(!showTrace)
+                  }}
                   className="text-xs sm:text-sm"
                 >
                   {showTrace ? 'Hide' : 'Show'} Guide
@@ -696,7 +713,11 @@ function WriteItDialog({
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={clearCanvas}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  clearCanvas()
+                }}
                 disabled={!hasDrawn}
                 className="text-xs sm:text-sm"
               >
@@ -705,12 +726,12 @@ function WriteItDialog({
             </div>
 
             <div 
-              className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden touch-none min-h-0"
+              className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden min-h-0 z-10"
               dir="rtl"
             >
               {showTrace && !showAnimation && (
                 <div
-                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8"
+                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8 z-0"
                 >
                   <div
                     className="text-[clamp(3rem,12vw,10rem)] whitespace-nowrap"
@@ -729,13 +750,13 @@ function WriteItDialog({
               {showAnimation && (
                 <canvas
                   ref={animationCanvasRef}
-                  className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                  className="absolute inset-0 w-full h-full pointer-events-none z-20"
                 />
               )}
               
               <canvas
                 ref={canvasRef}
-                className="absolute inset-0 w-full h-full touch-none cursor-crosshair"
+                className="absolute inset-0 w-full h-full cursor-crosshair z-10"
                 onPointerDown={startDrawing}
                 onPointerMove={draw}
                 onPointerUp={stopDrawing}
@@ -745,7 +766,7 @@ function WriteItDialog({
               />
             </div>
 
-            <div className="text-center space-y-1 shrink-0">
+            <div className="text-center space-y-1 shrink-0 z-20">
               <p className="text-xs sm:text-sm text-pretty">Use your stylus or finger to trace the Arabic letters</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground/70">
                 Watch the demo to see how the word is written, then practice on your own
