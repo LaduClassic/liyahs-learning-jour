@@ -8,10 +8,11 @@ import { ScienceSection } from '@/components/ScienceSection'
 import { ArabicSection } from '@/components/ArabicSection'
 import { CodingSection } from '@/components/CodingSection'
 import { IslamicSection } from '@/components/IslamicSection'
+import { BooksSection } from '@/components/BooksSection'
 import { ProgressDashboard } from '@/components/ProgressDashboard'
 import { Subject, MathOperation, ProgressData, GameSession } from '@/lib/types'
 
-type Screen = 'home' | 'math' | 'science' | 'arabic' | 'coding' | 'islamic-studies'
+type Screen = 'home' | 'math' | 'science' | 'arabic' | 'coding' | 'islamic-studies' | 'books'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
@@ -217,6 +218,10 @@ function App() {
           onBack={handleBackToHome}
           onQuizComplete={handleIslamicQuizComplete}
         />
+      )}
+
+      {currentScreen === 'books' && (
+        <BooksSection onBack={handleBackToHome} />
       )}
 
       <AnimatePresence>

@@ -1,4 +1,4 @@
-export type Subject = 'math' | 'science' | 'arabic' | 'coding' | 'islamic-studies'
+export type Subject = 'math' | 'science' | 'arabic' | 'coding' | 'islamic-studies' | 'books'
 
 export type MathOperation = 'addition' | 'subtraction' | 'multiplication' | 'division'
 
@@ -70,6 +70,30 @@ export interface SubjectProgress {
   averageTime: number
   lastPracticed: number
 }
+
+export interface BookPage {
+  id: string
+  pageNumber: number
+  content: string
+  lastEdited: number
+}
+
+export interface Book {
+  id: string
+  title: string
+  author: string
+  description: string
+  coverImage?: string
+  genre?: string
+  status: 'draft' | 'published'
+  pages: BookPage[]
+  createdAt: number
+  updatedAt: number
+  totalPages: number
+  completionPercentage: number
+}
+
+export type ExportFormat = 'pdf' | 'epub' | 'txt' | 'docx'
 
 export const ENCOURAGING_MESSAGES = {
   correct: [

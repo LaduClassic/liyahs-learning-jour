@@ -1,6 +1,6 @@
 # Liyah's Journey - Interactive Learning Platform
 
-An engaging educational platform for second-grade students featuring Math, Science, Coding, Arabic studies, and Islamic Studies with progress tracking and encouraging feedback.
+An engaging educational platform for second-grade students featuring Math, Science, Coding, Arabic studies, Islamic Studies, and a book creation/reading system with progress tracking and encouraging feedback.
 
 **Experience Qualities**:
 1. **Playful** - Bright colors, fun animations, and game-like interactions that make learning feel like play
@@ -105,6 +105,22 @@ This app features multiple learning sections with interactive games, progress tr
   - Pattern Matcher: Identify and complete visual patterns using shapes and colors
   - Progressive difficulty across multiple levels
   - Immediate visual feedback and encouraging messages
+
+### Books Section (NEW)
+- **Functionality**: Complete book creation and reading platform with writing tools, progress tracking, and export capabilities
+- **Purpose**: Foster creative writing, storytelling skills, and reading comprehension while giving children ownership of their creative works
+- **Trigger**: Selecting "My Books" from home screen
+- **Progression**: Home → My Books screen → Create/select book → Book overview → Edit pages OR Read book → Export options
+- **Success criteria**:
+  - **My Books Screen**: Displays all user-created books with search functionality, progress bars, cover images, and quick access buttons
+  - **Create Book Dialog**: Beautiful form to add title, author, description, genre, and optional cover image URL
+  - **Book Overview**: Shows book details, completion percentage, page count, and prominent buttons for reading and editing with export dropdown menu
+  - **Export Options**: Dropdown menu allowing export to PDF, ePub, DOCX, or TXT formats with visual feedback
+  - **Page Editor**: Distraction-free writing interface with page navigation, auto-save indication, and smooth transitions between pages
+  - **Reading View**: Immersive full-screen reading experience with swipe gestures, tap to toggle UI, progress indicator, and smooth page animations
+  - All data persists using useKV for book storage
+  - Empty state guidance when no books exist
+  - Search filters books by title, author, or genre
 
 ## Edge Case Handling
 
