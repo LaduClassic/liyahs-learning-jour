@@ -140,7 +140,8 @@ export function ReadingView({ book, onBack }: ReadingViewProps) {
 
       <div className="absolute inset-y-0 left-0 w-1/4" aria-label="Previous page" />
       <div className="absolute inset-y-0 right-0 w-1/4" aria-label="Next page" />
-      <div className="absolute inset-y-0 left-1/4 right-1/4" aria-label="Toggle UI visibility" />
+   //
+   
 
       <AnimatePresence>
         {showUI && (
