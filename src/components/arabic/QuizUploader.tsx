@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Gear, Upload, FileText } from '@phosphor-icons/react'
 import { toast } from 'sonner'
-import { parseQuizFile, updateSpellingWords, DEFAULT_SPELLING_WORDS, SpellingWord } from '@/lib/arabicData'
+import { parseQuizFile, DEFAULT_SPELLING_WORDS, SpellingWord } from '@/lib/arabicData'
 import { useKV } from '@github/spark/hooks'
 
 interface QuizUploaderProps {
@@ -22,8 +22,11 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
   const [isDragging, setIsDragging] = useState(false)
 
   const handleFileUpload = (file: File) => {
-    if (!file.name.endsWith('.txt')) {
-      toast.error('Please upload a .txt file')
+    const validExtensions = ['.txt', '.json']
+    const hasValidExtension = validExtensions.some(ext => file.name.endsWith(ext))
+    
+    if (!hasValidExtension) {
+      toast.error('Please upload a .txt or .json file')
       return
     }
 
@@ -38,7 +41,6 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
         }
 
         setCustomWords(words)
-        updateSpellingWords(words)
         toast.success(`Loaded ${words.length} words successfully!`)
         onWordsUpdated?.()
         setIsOpen(false)
@@ -78,7 +80,6 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
 
   const handleReset = () => {
     setCustomWords(null)
-    updateSpellingWords(DEFAULT_SPELLING_WORDS)
     toast.success('Reset to default words')
     onWordsUpdated?.()
     setIsOpen(false)
@@ -123,11 +124,11 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
             >
               <Upload size={48} className="mx-auto mb-4 text-muted-foreground" />
               <p className="text-sm text-muted-foreground mb-2">
-                Drag and drop a .txt file here, or click to browse
+                Drag and drop a file here, or click to browse
               </p>
               <input
                 type="file"
-                accept=".txt"
+                accept=".txt,.json"
                 onChange={handleFileInput}
                 className="hidden"
                 id="quiz-file-input"
@@ -143,21 +144,35 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
               </Button>
             </div>
 
-            <div className="bg-muted/50 p-4 rounded-lg">
-              <h4 className="font-semibold mb-2 text-sm">File Format:</h4>
-              <code className="text-xs block bg-background p-2 rounded">
-                arabic|phonetic|definition
-                <br />
-                شَعْرٌ|sha-r|hair
-                <br />
-                بُنِّيٌّ|bun-nii-y|brown
-              </code>
+            <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+              <div>
+                <h4 className="font-semibold mb-2 text-sm">Pipe-delimited format (.txt):</h4>
+                <code className="text-xs block bg-background p-2 rounded">
+                  arabic|phonetic|definition
+                  <br />
+                  شَعْرٌ|sha-r|hair
+                  <br />
+                  بُنِّيٌّ|bun-nii-y|brown
+                </code>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2 text-sm">JSON format (.json):</h4>
+                <code className="text-xs block bg-background p-2 rounded whitespace-pre">
+{`[
+  {
+    "arabic": "مِهَنٌ",
+    "phonetic": "mihanun",
+    "definition": "Professions"
+  }
+]`}
+                </code>
+              </div>
             </div>
 
             {hasCustomWords && (
               <div className="pt-2 border-t">
                 <p className="text-sm text-muted-foreground mb-3">
-                  Custom words are currently loaded.
+                  Custom words are currently loaded ({customWords?.length} words).
                 </p>
                 <Button
                   variant="outline"
@@ -175,3 +190,4 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
     </>
   )
 }
+

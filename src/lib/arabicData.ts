@@ -293,33 +293,46 @@ export const ARABIC_LETTERS: ArabicLetter[] = [
 ]
 
 export interface SpellingWord {
+  id?: string
   arabic: string
   phonetic: string
   definition: string
 }
 
 export const DEFAULT_SPELLING_WORDS: SpellingWord[] = [
-  { arabic: 'شَعْرٌ', phonetic: 'sha-r', definition: 'hair' },
-  { arabic: 'بُنِّيٌّ', phonetic: 'bun-nii-y', definition: 'brown' },
-  { arabic: 'قَصِيرٌ', phonetic: 'qa-sii-r', definition: 'short' },
-  { arabic: 'كَلْبٌ', phonetic: 'kalb', definition: 'dog' },
-  { arabic: 'مُرَقَّطٌ', phonetic: 'mu-raq-qat', definition: 'spotted' },
-  { arabic: 'تُمْسِكُ', phonetic: 'tum-si-ku', definition: 'she holds' },
-  { arabic: 'لُعْبَةٌ', phonetic: 'lu-bah', definition: 'toy' },
-  { arabic: 'كُرَةٌ', phonetic: 'ku-rah', definition: 'ball' },
-  { arabic: 'الْمِضْرَبُ', phonetic: 'al-mid-ra-bu', definition: 'the racket' }
+  { arabic: 'شَعْرٌ', phonetic: 'sha-r', definition: 'hair', id: 'default-1' },
+  { arabic: 'بُنِّيٌّ', phonetic: 'bun-nii-y', definition: 'brown', id: 'default-2' },
+  { arabic: 'قَصِيرٌ', phonetic: 'qa-sii-r', definition: 'short', id: 'default-3' },
+  { arabic: 'كَلْبٌ', phonetic: 'kalb', definition: 'dog', id: 'default-4' },
+  { arabic: 'مُرَقَّطٌ', phonetic: 'mu-raq-qat', definition: 'spotted', id: 'default-5' },
+  { arabic: 'تُمْسِكُ', phonetic: 'tum-si-ku', definition: 'she holds', id: 'default-6' },
+  { arabic: 'لُعْبَةٌ', phonetic: 'lu-bah', definition: 'toy', id: 'default-7' },
+  { arabic: 'كُرَةٌ', phonetic: 'ku-rah', definition: 'ball', id: 'default-8' },
+  { arabic: 'الْمِضْرَبُ', phonetic: 'al-mid-ra-bu', definition: 'the racket', id: 'default-9' }
 ]
 
-export const SPELLING_WORDS: SpellingWord[] = [...DEFAULT_SPELLING_WORDS]
-
 export function parseQuizFile(content: string): SpellingWord[] {
+  try {
+    const jsonData = JSON.parse(content)
+    if (Array.isArray(jsonData)) {
+      return jsonData.map(item => ({
+        id: item.id || crypto.randomUUID(),
+        arabic: item.arabic || '',
+        phonetic: item.phonetic || item.definition || '',
+        definition: item.definition || item.phonetic || ''
+      })).filter(w => w.arabic && w.phonetic && w.definition)
+    }
+  } catch {
+  }
+  
   const lines = content.split('\n').filter(line => line.trim())
   const words: SpellingWord[] = []
   
   for (const line of lines) {
     const parts = line.split('|').map(p => p.trim())
-    if (parts.length === 3) {
+    if (parts.length >= 3) {
       words.push({
+        id: crypto.randomUUID(),
         arabic: parts[0],
         phonetic: parts[1],
         definition: parts[2]
@@ -328,11 +341,6 @@ export function parseQuizFile(content: string): SpellingWord[] {
   }
   
   return words
-}
-
-export function updateSpellingWords(newWords: SpellingWord[]) {
-  SPELLING_WORDS.length = 0
-  SPELLING_WORDS.push(...newWords)
 }
 
 const HARAKAT = /[\u064B-\u0652]/g

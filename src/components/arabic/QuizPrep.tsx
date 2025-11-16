@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { SPELLING_WORDS, clusterArabic, normalizeArabic, updateSpellingWords, SpellingWord } from '@/lib/arabicData'
+import { clusterArabic, DEFAULT_SPELLING_WORDS, SpellingWord } from '@/lib/arabicData'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QuizUploader } from '@/components/arabic/QuizUploader'
@@ -14,18 +14,11 @@ type PrepMode = 'flashcards' | 'letter-order' | 'phonetic-match' | 'definition-m
 export function QuizPrep() {
   const [mode, setMode] = useState<PrepMode>('flashcards')
   const [wordIndex, setWordIndex] = useState(0)
-  const [refreshKey, setRefreshKey] = useState(0)
   const [customWords] = useKV<SpellingWord[] | null>('arabic-custom-words', null)
-
-  useEffect(() => {
-    if (customWords) {
-      updateSpellingWords(customWords as any)
-      setRefreshKey(prev => prev + 1)
-    }
-  }, [customWords])
+  
+  const words = customWords || DEFAULT_SPELLING_WORDS
 
   const handleWordsUpdated = () => {
-    setRefreshKey(prev => prev + 1)
     setWordIndex(0)
   }
 
@@ -79,30 +72,36 @@ export function QuizPrep() {
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={`${mode}-${refreshKey}`}
+          key={`${mode}-${words.length}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
           className="w-full"
         >
-          {mode === 'letter-order' && <LetterOrderMode wordIndex={wordIndex} setWordIndex={setWordIndex} />}
-          {mode === 'phonetic-match' && <PhoneticMatchMode />}
-          {mode === 'definition-match' && <DefinitionMatchMode />}
-          {mode === 'write-it' && <WriteItMode wordIndex={wordIndex} setWordIndex={setWordIndex} />}
-          {mode === 'flashcards' && <FlashcardsMode wordIndex={wordIndex} setWordIndex={setWordIndex} />}
+          {mode === 'letter-order' && <LetterOrderMode words={words} wordIndex={wordIndex} setWordIndex={setWordIndex} />}
+          {mode === 'phonetic-match' && <PhoneticMatchMode words={words} />}
+          {mode === 'definition-match' && <DefinitionMatchMode words={words} />}
+          {mode === 'write-it' && <WriteItMode words={words} wordIndex={wordIndex} setWordIndex={setWordIndex} />}
+          {mode === 'flashcards' && <FlashcardsMode words={words} wordIndex={wordIndex} setWordIndex={setWordIndex} />}
         </motion.div>
       </AnimatePresence>
     </div>
   )
 }
 
-function LetterOrderMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
-  const word = SPELLING_WORDS[wordIndex]
+function LetterOrderMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]; wordIndex: number; setWordIndex: (i: number) => void }) {
+  const word = words[wordIndex]
   const clusters = clusterArabic(word.arabic)
-  const [shuffled] = useState(() => [...clusters].sort(() => Math.random() - 0.5))
+  const [shuffled, setShuffled] = useState<string[]>([])
   const [slots, setSlots] = useState<string[]>([])
   const [used, setUsed] = useState<Set<number>>(new Set())
+
+  useEffect(() => {
+    setShuffled([...clusters].sort(() => Math.random() - 0.5))
+    setSlots([])
+    setUsed(new Set())
+  }, [wordIndex, word.arabic])
 
   const handleTileClick = (tile: string, tileIndex: number) => {
     if (used.has(tileIndex)) return
@@ -133,13 +132,11 @@ function LetterOrderMode({ wordIndex, setWordIndex }: { wordIndex: number; setWo
   }
 
   const handlePrev = () => {
-    setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
-    handleReset()
+    setWordIndex((wordIndex - 1 + words.length) % words.length)
   }
 
   const handleNext = () => {
-    setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
-    handleReset()
+    setWordIndex((wordIndex + 1) % words.length)
   }
 
   return (
@@ -199,12 +196,12 @@ function LetterOrderMode({ wordIndex, setWordIndex }: { wordIndex: number; setWo
   )
 }
 
-function PhoneticMatchMode() {
+function PhoneticMatchMode({ words }: { words: SpellingWord[] }) {
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null)
   const [selectedRight, setSelectedRight] = useState<number | null>(null)
   const [matched, setMatched] = useState<Set<number>>(new Set())
   const [rightOrder] = useState(() =>
-    SPELLING_WORDS.map((_, i) => i).sort(() => Math.random() - 0.5)
+    words.map((_, i) => i).sort(() => Math.random() - 0.5)
   )
 
   const tryMatch = (leftIndex: number | null, rightIndex: number | null) => {
@@ -216,7 +213,7 @@ function PhoneticMatchMode() {
       setSelectedLeft(null)
       setSelectedRight(null)
 
-      if (matched.size + 1 === SPELLING_WORDS.length) {
+      if (matched.size + 1 === words.length) {
         toast.success('All matched! Great work! 🎉')
       }
     } else {
@@ -252,7 +249,7 @@ function PhoneticMatchMode() {
             Words
           </h3>
           <div className="flex flex-col gap-2 w-full">
-            {SPELLING_WORDS.map((word, index) => (
+            {words.map((word, index) => (
               <Button
                 key={index}
                 variant="outline"
@@ -297,7 +294,7 @@ function PhoneticMatchMode() {
                     : ''
                 }`}
               >
-                {SPELLING_WORDS[originalIndex].phonetic}
+                {words[originalIndex].phonetic}
               </Button>
             ))}
           </div>
@@ -307,12 +304,12 @@ function PhoneticMatchMode() {
   )
 }
 
-function DefinitionMatchMode() {
+function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null)
   const [selectedRight, setSelectedRight] = useState<number | null>(null)
   const [matched, setMatched] = useState<Set<number>>(new Set())
   const [rightOrder] = useState(() =>
-    SPELLING_WORDS.map((_, i) => i).sort(() => Math.random() - 0.5)
+    words.map((_, i) => i).sort(() => Math.random() - 0.5)
   )
 
   const tryMatch = (leftIndex: number | null, rightIndex: number | null) => {
@@ -324,7 +321,7 @@ function DefinitionMatchMode() {
       setSelectedLeft(null)
       setSelectedRight(null)
 
-      if (matched.size + 1 === SPELLING_WORDS.length) {
+      if (matched.size + 1 === words.length) {
         toast.success('All meanings matched! Fantastic! 🎉')
       }
     } else {
@@ -360,7 +357,7 @@ function DefinitionMatchMode() {
             Arabic
           </h3>
           <div className="flex flex-col gap-2 w-full">
-            {SPELLING_WORDS.map((word, index) => (
+            {words.map((word, index) => (
               <Button
                 key={index}
                 variant="outline"
@@ -405,7 +402,7 @@ function DefinitionMatchMode() {
                     : ''
                 }`}
               >
-                {SPELLING_WORDS[originalIndex].definition}
+                {words[originalIndex].definition}
               </Button>
             ))}
           </div>
@@ -415,16 +412,16 @@ function DefinitionMatchMode() {
   )
 }
 
-function WriteItMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
-  const word = SPELLING_WORDS[wordIndex]
+function WriteItMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]; wordIndex: number; setWordIndex: (i: number) => void }) {
+  const word = words[wordIndex]
   const [showFullscreen, setShowFullscreen] = useState(false)
 
   const handlePrev = () => {
-    setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
+    setWordIndex((wordIndex - 1 + words.length) % words.length)
   }
 
   const handleNext = () => {
-    setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
+    setWordIndex((wordIndex + 1) % words.length)
   }
 
   return (
@@ -779,17 +776,17 @@ function WriteItDialog({
   );
 }
 
-function FlashcardsMode({ wordIndex, setWordIndex }: { wordIndex: number; setWordIndex: (i: number) => void }) {
-  const word = SPELLING_WORDS[wordIndex]
+function FlashcardsMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]; wordIndex: number; setWordIndex: (i: number) => void }) {
+  const word = words[wordIndex]
   const [revealed, setRevealed] = useState(false)
 
   const handlePrev = () => {
-    setWordIndex((wordIndex - 1 + SPELLING_WORDS.length) % SPELLING_WORDS.length)
+    setWordIndex((wordIndex - 1 + words.length) % words.length)
     setRevealed(false)
   }
 
   const handleNext = () => {
-    setWordIndex((wordIndex + 1) % SPELLING_WORDS.length)
+    setWordIndex((wordIndex + 1) % words.length)
     setRevealed(false)
   }
 
