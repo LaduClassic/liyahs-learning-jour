@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QuizUploader } from '@/components/arabic/QuizUploader'
 import { useKV } from '@github/spark/hooks'
-import { X, Play } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react'
 
 type PrepMode = 'flashcards' | 'letter-order' | 'phonetic-match' | 'definition-match' | 'write-it'
 
@@ -286,7 +286,7 @@ function PhoneticMatchMode({ words }: { words: SpellingWord[] }) {
                 size="lg"
                 onClick={() => handleRightClick(originalIndex)}
                 disabled={matched.has(originalIndex)}
-                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 ${
+                className={`w-full text-xl sm:text-2xl h-auto py-3 sm:py-4 ${
                   matched.has(originalIndex)
                     ? 'bg-success/20 border-success'
                     : selectedRight === originalIndex
@@ -394,7 +394,7 @@ function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
                 size="lg"
                 onClick={() => handleRightClick(originalIndex)}
                 disabled={matched.has(originalIndex)}
-                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 font-mono ${
+                className={`w-full text-xl sm:text-2xl h-auto py-3 sm:py-4 font-mono ${
                   matched.has(originalIndex)
                     ? 'bg-success/20 border-success'
                     : selectedRight === originalIndex
@@ -446,7 +446,7 @@ function WriteItMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]
               Open Writing Canvas
             </Button>
             <p className="text-sm text-muted-foreground text-center">
-              Click to open full-screen writing area with demonstrations
+              Click to open full-screen writing area
             </p>
           </div>
 
@@ -476,18 +476,16 @@ function WriteItDialog({
   word: SpellingWord
 }) {
   const [showTrace, setShowTrace] = useState(true)
-  const [showAnimation, setShowAnimation] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationCanvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasDrawn, setHasDrawn] = useState(false)
-  const lastPointRef = useRef<{ x: number; y: number } | null>(null)
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || !open) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { willReadFrequently: false })
     if (!ctx) return
 
     const resizeCanvas = () => {
@@ -500,141 +498,90 @@ function WriteItDialog({
       ctx.scale(dpr, dpr)
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
-      ctx.lineWidth = 4
-      ctx.strokeStyle = 'oklch(0.60 0.19 250)'
+      ctx.lineWidth = 5
+      ctx.strokeStyle = '#5B5FC7'
       
       canvas.style.width = `${rect.width}px`
       canvas.style.height = `${rect.height}px`
+      
+      contextRef.current = ctx
     }
 
-    setTimeout(resizeCanvas, 100)
     resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
 
-    return () => window.removeEventListener('resize', resizeCanvas)
+    return () => {
+      window.removeEventListener('resize', resizeCanvas)
+      contextRef.current = null
+    }
   }, [open])
 
-  const animateWordWriting = async () => {
-    setShowAnimation(true)
-    
-    await new Promise(resolve => setTimeout(resolve, 50))
-    
-    const canvas = animationCanvasRef.current
-    if (!canvas) {
-      setShowAnimation(false)
-      return
-    }
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      setShowAnimation(false)
-      return
-    }
-    
-    const rect = canvas.getBoundingClientRect()
-    const dpr = window.devicePixelRatio || 1
-    
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
-    
-    ctx.scale(dpr, dpr)
-    ctx.clearRect(0, 0, rect.width, rect.height)
-
-    ctx.font = `bold ${Math.min(rect.width * 0.3, 200)}px 'Scheherazade New', 'Noto Naskh Arabic', sans-serif`
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillStyle = 'oklch(0.60 0.19 250)'
-
-    const text = word.arabic
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-
-    for (let i = 0; i <= text.length; i++) {
-      ctx.clearRect(0, 0, rect.width, rect.height)
-      
-      const partialText = text.substring(0, i)
-      ctx.fillText(partialText, centerX, centerY)
-
-      if (i < text.length) {
-        const currentMetrics = ctx.measureText(partialText)
-        const cursorX = centerX + currentMetrics.width / 2 + 5
-        
-        ctx.beginPath()
-        ctx.arc(cursorX, centerY, 8, 0, Math.PI * 2)
-        ctx.fillStyle = 'oklch(0.85 0.16 90)'
-        ctx.fill()
-        ctx.fillStyle = 'oklch(0.60 0.19 250)'
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 400))
-    }
-
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setShowAnimation(false)
-  }
-
-  const getCoordinates = (e: React.PointerEvent) => {
+  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
     if (!canvas) return null
 
     const rect = canvas.getBoundingClientRect()
     
+    let clientX: number
+    let clientY: number
+    
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX
+      clientY = e.touches[0].clientY
+    } else if ('clientX' in e) {
+      clientX = e.clientX
+      clientY = e.clientY
+    } else {
+      return null
+    }
+    
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: clientX - rect.left,
+      y: clientY - rect.top
     }
   }
 
-  const startDrawing = (e: React.PointerEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const coords = getCoordinates(e)
-    if (!coords) return
-
-    const ctx = canvasRef.current?.getContext('2d')
-    if (!ctx) return
+    if (!coords || !contextRef.current) return
 
     setIsDrawing(true)
     setHasDrawn(true)
-    lastPointRef.current = coords
-    ctx.beginPath()
-    ctx.moveTo(coords.x, coords.y)
+    
+    contextRef.current.beginPath()
+    contextRef.current.moveTo(coords.x, coords.y)
   }
 
-  const draw = (e: React.PointerEvent) => {
-    if (!isDrawing) return
-    e.preventDefault()
-    e.stopPropagation()
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || !contextRef.current) return
 
     const coords = getCoordinates(e)
-    if (!coords || !lastPointRef.current) return
+    if (!coords) return
 
-    const ctx = canvasRef.current?.getContext('2d')
-    if (!ctx) return
-
-    ctx.lineTo(coords.x, coords.y)
-    ctx.stroke()
-    lastPointRef.current = coords
+    contextRef.current.lineTo(coords.x, coords.y)
+    contextRef.current.stroke()
   }
 
-  const stopDrawing = (e?: React.PointerEvent) => {
-    if (e) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
+  const stopDrawing = () => {
+    if (!contextRef.current) return
     setIsDrawing(false)
-    lastPointRef.current = null
+    contextRef.current.closePath()
   }
 
   const clearCanvas = () => {
     const canvas = canvasRef.current
-    const ctx = canvas?.getContext('2d')
-    if (!ctx || !canvas) return
+    if (!canvas || !contextRef.current) return
 
     const rect = canvas.getBoundingClientRect()
-    ctx.clearRect(0, 0, rect.width, rect.height)
+    const dpr = window.devicePixelRatio || 1
+    contextRef.current.clearRect(0, 0, rect.width * dpr, rect.height * dpr)
     setHasDrawn(false)
+  }
+
+  const handleClose = () => {
+    clearCanvas()
+    setShowTrace(true)
+    onOpenChange(false)
   }
 
   return (
@@ -642,15 +589,10 @@ function WriteItDialog({
       <DialogContent 
         className="!max-w-none !w-screen !h-screen !max-h-screen !p-0 !gap-0 !border-0 !rounded-none !translate-x-0 !translate-y-0 !top-0 !left-0 flex flex-col overflow-hidden"
         onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={() => {
-          clearCanvas()
-          setShowTrace(true)
-          setShowAnimation(false)
-          onOpenChange(false)
-        }}
+        onEscapeKeyDown={handleClose}
       >
         <div className="flex flex-col h-screen w-screen bg-background overflow-hidden">
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0 z-20">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
             <div className="flex flex-col gap-1 flex-1 min-w-0">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary truncate">
                 Practice Writing
@@ -662,59 +604,28 @@ function WriteItDialog({
             <Button
               variant="ghost"
               size="icon"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                clearCanvas()
-                setShowTrace(true)
-                setShowAnimation(false)
-                onOpenChange(false)
-              }}
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2 hover:bg-destructive/20 hover:text-destructive z-30"
+              onClick={handleClose}
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2 hover:bg-destructive/20 hover:text-destructive"
               aria-label="Close"
             >
               <X size={24} weight="bold" />
             </Button>
           </div>
 
-          <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0 z-10">
-            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0 z-20">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    animateWordWriting()
-                  }}
-                  disabled={showAnimation}
-                  className="gap-2 text-xs sm:text-sm"
-                >
-                  <Play size={18} weight="fill" />
-                  Watch Demo
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setShowTrace(!showTrace)
-                  }}
-                  className="text-xs sm:text-sm"
-                >
-                  {showTrace ? 'Hide' : 'Show'} Guide
-                </Button>
-              </div>
+          <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0">
+            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTrace(!showTrace)}
+                className="text-xs sm:text-sm"
+              >
+                {showTrace ? 'Hide' : 'Show'} Guide
+              </Button>
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  clearCanvas()
-                }}
+                onClick={clearCanvas}
                 disabled={!hasDrawn}
                 className="text-xs sm:text-sm"
               >
@@ -723,50 +634,43 @@ function WriteItDialog({
             </div>
 
             <div 
-              className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden min-h-0 z-10"
+              className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden min-h-0"
               dir="rtl"
             >
-              {showTrace && !showAnimation && (
+              {showTrace && (
                 <div
-                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8 z-0"
+                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8"
                 >
                   <div
-                    className="text-[clamp(3rem,12vw,10rem)] whitespace-nowrap"
+                    className="text-[clamp(4rem,15vw,12rem)] whitespace-nowrap font-bold"
                     style={{
                       fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
-                      color: 'oklch(0.60 0.19 250 / 0.2)',
-                      textShadow: '0 0 2px oklch(0.60 0.19 250 / 0.3)',
-                      WebkitTextStroke: '2px oklch(0.60 0.19 250 / 0.25)'
+                      color: 'oklch(0.60 0.19 250 / 0.15)',
+                      WebkitTextStroke: '2px oklch(0.60 0.19 250 / 0.2)'
                     }}
                   >
                     {word.arabic}
                   </div>
                 </div>
               )}
-
-              {showAnimation && (
-                <canvas
-                  ref={animationCanvasRef}
-                  className="absolute inset-0 w-full h-full pointer-events-none z-20"
-                />
-              )}
               
               <canvas
                 ref={canvasRef}
-                className="absolute inset-0 w-full h-full cursor-crosshair z-10"
-                onPointerDown={startDrawing}
-                onPointerMove={draw}
-                onPointerUp={stopDrawing}
-                onPointerLeave={stopDrawing}
-                onPointerCancel={stopDrawing}
-                style={{ touchAction: 'none' }}
+                className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={startDrawing}
+                onTouchMove={draw}
+                onTouchEnd={stopDrawing}
               />
             </div>
 
-            <div className="text-center space-y-1 shrink-0 z-20">
-              <p className="text-xs sm:text-sm text-pretty">Use your stylus or finger to trace the Arabic letters</p>
+            <div className="text-center space-y-1 shrink-0">
+              <p className="text-xs sm:text-sm text-pretty">Use your mouse, stylus, or finger to trace the Arabic letters</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground/70">
-                Watch the demo to see how the word is written, then practice on your own
+                Toggle the guide to see or hide the outline
               </p>
             </div>
           </div>
