@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Gear, Upload, FileText } from '@phosphor-icons/react'
 import { toast } from 'sonner'
-import { parseQuizFile, updateSpellingWords, DEFAULT_SPELLING_WORDS, SpellingWord } from '@/lib/arabicData'
+import { parseQuizFile, DEFAULT_SPELLING_WORDS, SpellingWord } from '@/lib/arabicData'
 import { useKV } from '@github/spark/hooks'
 
 interface QuizUploaderProps {
@@ -38,7 +38,6 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
         }
 
         setCustomWords(words)
-        updateSpellingWords(words)
         toast.success(`Loaded ${words.length} words successfully!`)
         onWordsUpdated?.()
         setIsOpen(false)
@@ -78,7 +77,6 @@ export function QuizUploader({ onWordsUpdated }: QuizUploaderProps) {
 
   const handleReset = () => {
     setCustomWords(null)
-    updateSpellingWords(DEFAULT_SPELLING_WORDS)
     toast.success('Reset to default words')
     onWordsUpdated?.()
     setIsOpen(false)

@@ -412,6 +412,73 @@ function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
   )
 }
 
+function FlashcardsMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]; wordIndex: number; setWordIndex: (i: number) => void }) {
+  const word = words[wordIndex]
+  const [flipped, setFlipped] = useState(false)
+
+  const handlePrev = () => {
+    setWordIndex((wordIndex - 1 + words.length) % words.length)
+    setFlipped(false)
+  }
+
+  const handleNext = () => {
+    setWordIndex((wordIndex + 1) % words.length)
+    setFlipped(false)
+  }
+
+  return (
+    <Card className="p-4 sm:p-6 md:p-8 w-full">
+      <div className="flex flex-col gap-6">
+        <p className="text-center text-base sm:text-lg md:text-xl text-muted-foreground">
+          Card {wordIndex + 1} of {words.length}
+        </p>
+
+        <div 
+          className="relative w-full h-64 sm:h-80 md:h-96 cursor-pointer perspective-1000"
+          onClick={() => setFlipped(!flipped)}
+        >
+          <motion.div
+            className="w-full h-full"
+            animate={{ rotateY: flipped ? 180 : 0 }}
+            transition={{ duration: 0.6, type: "spring" }}
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div
+              className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl border-2 border-primary flex flex-col items-center justify-center p-6 gap-4"
+              style={{ backfaceVisibility: "hidden" }}
+            >
+              <div 
+                className="text-6xl sm:text-7xl md:text-8xl font-bold"
+                style={{
+                  fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+                  direction: 'rtl'
+                }}
+              >
+                {word.arabic}
+              </div>
+              <p className="text-sm text-muted-foreground">Click to flip</p>
+            </div>
+
+            <div
+              className="absolute inset-0 w-full h-full bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl border-2 border-secondary flex flex-col items-center justify-center p-6 gap-2"
+              style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            >
+              <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary">{word.phonetic}</p>
+              <p className="text-xl sm:text-2xl text-muted-foreground">{word.definition}</p>
+              <p className="text-sm text-muted-foreground mt-4">Click to flip back</p>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
+          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev Card</Button>
+          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next Card</Button>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
 function WriteItMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]; wordIndex: number; setWordIndex: (i: number) => void }) {
   const word = words[wordIndex]
   const [showFullscreen, setShowFullscreen] = useState(false)
@@ -477,15 +544,16 @@ function WriteItDialog({
 }) {
   const [showTrace, setShowTrace] = useState(true)
   const [isDrawing, setIsDrawing] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const contextRef = useRef<CanvasRenderingContext2D | null>(null)
 
-  const contextRef = useRef<CanvasRenderingContext2D | null>(null)
+  useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || !open) return
 
     const ctx = canvas.getContext('2d', { willReadFrequently: false })
     if (!ctx) return
-    const ctx = canvas.getContext('2d', { willReadFrequently: false })
+    
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect()
       const dpr = window.devicePixelRatio || 1
@@ -498,33 +566,30 @@ function WriteItDialog({
       ctx.lineJoin = 'round'
       ctx.lineWidth = 5
       ctx.strokeStyle = '#5B5FC7'
-      ctx.lineWidth = 5
-      ctx.strokeStyle = '#5B5FC7'
+      canvas.style.width = `${rect.width}px`
       canvas.style.height = `${rect.height}px`
-      
-      contextRef.current = ctx
       
       contextRef.current = ctx
     }
 
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
 
-    return () => {
-      window.removeEventListener('resize', resizeCanvas)
     return () => {
       window.removeEventListener('resize', resizeCanvas)
       contextRef.current = null
-    
-  }, [open])ches' in e && e.touches.length > 0) {
+    }
+  }, [open])
 
-  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | React.PointerEvent<HTMLCanvasElement>) => {
+  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
     if (!canvas) return null
- clientY = e.clientY
-      return null
+    
+    const rect = canvas.getBoundingClientRect()
     
     let clientX: number
     let clientY: number
-      y: clientY - rect.top
+    
     if ('touches' in e && e.touches.length > 0) {
       clientX = e.touches[0].clientX
       clientY = e.touches[0].clientY
@@ -532,111 +597,141 @@ function WriteItDialog({
       clientX = e.clientX
       clientY = e.clientY
     } else {
-      return nulltrue)
-  const clearCanvas = () => {
-    clearCanvas()
-    setShowTrace(true)
+      return null
+    }
+    
+    return {
       x: clientX - rect.left,
       y: clientY - rect.top
+    }
+  }
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-      >
-    if (!coords || !contextRef.current) return overflow-hidden">
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
-              </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">
-    -bold">{word.phonetic}</span> ({word.definition})
+    e.preventDefault()
+    setIsDrawing(true)
+    const coords = getCoordinates(e)
+    if (!coords || !contextRef.current) return
+    
     contextRef.current.beginPath()
     contextRef.current.moveTo(coords.x, coords.y)
-            <Button
-              variant="ghost"
+  }
+
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !contextRef.current) return
-e="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2 hover:bg-destructive/20 hover:text-destructive"
-              <X size={24} weight="bold" />
+    e.preventDefault()
+    
+    const coords = getCoordinates(e)
     if (!coords) return
-          </div>
+    
     contextRef.current.lineTo(coords.x, coords.y)
-    contextRef.current.stroke()sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0">
-                onClick={() => setShowTrace(!showTrace)}
-                className="text-xs sm:text-sm"
-  const stopDrawing = () => {
-    if (!contextRef.current) returnuide
-                size="sm"
-    contextRef.current.closePath()
-                disabled={!hasDrawn}
-                className="text-xs sm:text-sm"
-              >
-                Clear Canvas
-    if (!canvas || !contextRef.current) return
+    contextRef.current.stroke()
+  }
 
-            <div 
-    const dpr = window.devicePixelRatio || 1-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden min-h-0"
+  const stopDrawing = () => {
+    if (!contextRef.current) return
+    setIsDrawing(false)
+    contextRef.current.closePath()
+  }
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current
+    if (!canvas || !contextRef.current) return
+    
+    const rect = canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
     contextRef.current.clearRect(0, 0, rect.width * dpr, rect.height * dpr)
-            >
-              {showTrace && (
-                <div
-  const handleClose = () => {nset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8"
+  }
+
+  const handleClose = () => {
     clearCanvas()
     setShowTrace(true)
     onOpenChange(false)
   }
-: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
-  return (ch(0.60 0.19 250 / 0.15)',
+
+  return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
       <DialogContent 
         className="!max-w-none !w-screen !h-screen !max-h-screen !p-0 !gap-0 !border-0 !rounded-none !translate-x-0 !translate-y-0 !top-0 !left-0 flex flex-col overflow-hidden"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={handleClose}
+      >
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold truncate">
+              Write: <span className="text-primary font-bold">{word.phonetic}</span> ({word.definition})
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground truncate">
+              Practice writing in Arabic
+            </p>
+          </div>
+          <Button
+            variant="ghost"
+            onClick={handleClose}
+            className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2 hover:bg-destructive/20 hover:text-destructive"
+          >
+            <X size={24} weight="bold" />
+          </Button>
+        </div>
+
+        <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowTrace(!showTrace)}
+              className="text-xs sm:text-sm"
+            >
+              {showTrace ? 'Hide' : 'Show'} Guide
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={clearCanvas}
+              className="text-xs sm:text-sm"
+            >
+              Clear Canvas
+            </Button>
+          </div>
+
+          <div 
+            className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden min-h-0"
+          >
+            {showTrace && (
+              <div
+                className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8"
+              >
+                <div 
+                  className="text-[clamp(4rem,15vw,12rem)] whitespace-nowrap font-bold"
+                  style={{
+                    fontFamily: "'Scheherazade New', 'Noto Naskh Arabic', 'Noto Kufi Arabic', 'Geeza Pro', 'Arial', sans-serif",
+                    direction: 'rtl',
+                    color: 'oklch(0.60 0.19 250 / 0.15)',
+                    WebkitTextStroke: '2px oklch(0.60 0.19 250 / 0.2)'
+                  }}
+                >
+                  {word.arabic}
                 </div>
-              )}
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
-              <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                onTouchStart={startDrawing}
-                onTouchMove={draw}
-                onTouchEnd={stopDrawing}
-              />
-              onClick={handleClose}
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0 ml-2 hover:bg-destructive/20 hover:text-destructive"
+              </div>
+            )}
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
+              onMouseDown={startDrawing}
+              onMouseMove={draw}
+              onMouseUp={stopDrawing}
+              onMouseLeave={stopDrawing}
+              onTouchStart={startDrawing}
+              onTouchMove={draw}
+              onTouchEnd={stopDrawing}
+            />
+          </div>
+
+          <div className="text-center space-y-1 shrink-0">
+            <p className="text-xs sm:text-sm text-pretty">Use your mouse, stylus, or finger to trace the Arabic letters</p>
+            <p className="text-xs text-muted-foreground">Toggle the guide to see or hide the outline</p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
-  );
-}
-
-          <div className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 overflow-hidden min-h-0">
-            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowTrace(!showTrace)}
-                className="text-xs sm:text-sm"
-              >
-                {showTrace ? 'Hide' : 'Show'} Guide
-              </Button>
-          </Button>
-          {revealed && (
-            <motion.div
-                onClick={clearCanvas}
-            </motion.div>
-          )}
-        </div>
-
-        <div className="flex gap-2 sm:gap-3 justify-center flex-wrap w-full">
-          <Button onClick={handlePrev} className="flex-1 sm:flex-initial">Prev</Button>
-          <Button onClick={handleNext} className="flex-1 sm:flex-initial">Next</Button>
-        </div>
-              className="relative flex-1 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl sm:rounded-3xl border-4 border-dashed border-primary/30 overflow-hidden min-h-0"
-    </Card>
   )
-              {showTrace && (
-                  className="absolute inset-0 flex justify-center items-center select-none pointer-events-none p-4 sm:p-6 md:p-8"                    className="text-[clamp(4rem,15vw,12rem)] whitespace-nowrap font-bold"                      color: 'oklch(0.60 0.19 250 / 0.15)',                      WebkitTextStroke: '2px oklch(0.60 0.19 250 / 0.2)'                className="absolute inset-0 w-full h-full cursor-crosshair touch-none"                onMouseDown={startDrawing}                onMouseMove={draw}                onMouseUp={stopDrawing}                onMouseLeave={stopDrawing}                onTouchStart={startDrawing}                onTouchMove={draw}                onTouchEnd={stopDrawing}
-            <div className="text-center space-y-1 shrink-0">              <p className="text-xs sm:text-sm text-pretty">Use your mouse, stylus, or finger to trace the Arabic letters</p>                Toggle the guide to see or hide the outline
+}
