@@ -33,9 +33,9 @@ export function QuizPrep() {
   const descriptions: Record<PrepMode, string> = {
     'flashcards': 'Flip through the cards to review every word.',
     'letter-order': 'Arrange the Arabic letters in the correct order.',
-    'phonetic-match': 'Match each Arabic word to the way it sounds.',
-    'definition-match': 'Pair every Arabic word with its English meaning.',
-    'write-it': 'Write the Arabic spelling from the pronunciation.'
+    'phonetic-match': 'Match each Arabic word to its English meaning.',
+    'definition-match': 'Pair every Arabic word with its transliteration.',
+    'write-it': 'Write the Arabic spelling from the English meaning.'
   }
 
   return (
@@ -246,7 +246,7 @@ function PhoneticMatchMode({ words }: { words: SpellingWord[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div className="flex flex-col gap-3 w-full">
           <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
-            Words
+            Arabic Words
           </h3>
           <div className="flex flex-col gap-2 w-full">
             {words.map((word, index) => (
@@ -276,7 +276,7 @@ function PhoneticMatchMode({ words }: { words: SpellingWord[] }) {
 
         <div className="flex flex-col gap-3 w-full">
           <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
-            Phonetics
+            English Meanings
           </h3>
           <div className="flex flex-col gap-2 w-full">
             {rightOrder.map((originalIndex) => (
@@ -286,7 +286,7 @@ function PhoneticMatchMode({ words }: { words: SpellingWord[] }) {
                 size="lg"
                 onClick={() => handleRightClick(originalIndex)}
                 disabled={matched.has(originalIndex)}
-                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 font-mono ${
+                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 ${
                   matched.has(originalIndex)
                     ? 'bg-success/20 border-success'
                     : selectedRight === originalIndex
@@ -322,7 +322,7 @@ function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
       setSelectedRight(null)
 
       if (matched.size + 1 === words.length) {
-        toast.success('All meanings matched! Fantastic! 🎉')
+        toast.success('All transliterations matched! Fantastic! 🎉')
       }
     } else {
       toast.error('Try matching again.')
@@ -354,7 +354,7 @@ function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div className="flex flex-col gap-3 w-full">
           <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
-            Arabic
+            Arabic Words
           </h3>
           <div className="flex flex-col gap-2 w-full">
             {words.map((word, index) => (
@@ -384,7 +384,7 @@ function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
 
         <div className="flex flex-col gap-3 w-full">
           <h3 className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground font-semibold">
-            Definition
+            Transliterations
           </h3>
           <div className="flex flex-col gap-2 w-full">
             {rightOrder.map((originalIndex) => (
@@ -394,7 +394,7 @@ function DefinitionMatchMode({ words }: { words: SpellingWord[] }) {
                 size="lg"
                 onClick={() => handleRightClick(originalIndex)}
                 disabled={matched.has(originalIndex)}
-                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 ${
+                className={`w-full text-base sm:text-lg md:text-xl h-auto py-3 sm:py-4 font-mono ${
                   matched.has(originalIndex)
                     ? 'bg-success/20 border-success'
                     : selectedRight === originalIndex
@@ -429,11 +429,11 @@ function WriteItMode({ words, wordIndex, setWordIndex }: { words: SpellingWord[]
       <Card className="p-4 sm:p-6 md:p-8 w-full">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-4">
-            <p className="text-center text-lg sm:text-xl font-mono text-primary font-bold">
+            <p className="text-center text-2xl sm:text-3xl font-bold text-primary">
               {word.phonetic}
             </p>
-            <p className="text-center text-base sm:text-lg text-muted-foreground">
-              {word.definition}
+            <p className="text-center text-base sm:text-lg font-mono text-muted-foreground">
+              ({word.definition})
             </p>
           </div>
 
@@ -656,7 +656,7 @@ function WriteItDialog({
                 Practice Writing
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                <span className="font-mono font-bold">{word.phonetic}</span> — {word.definition}
+                <span className="font-bold">{word.phonetic}</span> ({word.definition})
               </p>
             </div>
             <Button
