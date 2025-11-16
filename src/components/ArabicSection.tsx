@@ -6,6 +6,7 @@ import { House, Question, BookOpen, Flask, NumberSquareOne, Code } from '@phosph
 import { LettersQuiz } from '@/components/arabic/LettersQuiz'
 import { QuizPrep } from '@/components/arabic/QuizPrep'
 import { LetterReference } from '@/components/arabic/LetterReference'
+import { WritingCanvas } from '@/components/arabic/WritingCanvas'
 import { SectionLayout } from '@/components/layouts/SectionLayout'
 interface ArabicSectionProps {
   onBack: () => void
@@ -107,7 +108,7 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
 
             <Tabs defaultValue="letters" className="w-full">
               <div className="flex justify-center mb-6 sm:mb-8 px-2">
-                <TabsList className="inline-flex gap-2 bg-muted/50 p-2 rounded-full w-full sm:w-auto max-w-md">
+                <TabsList className="inline-flex gap-2 bg-muted/50 p-2 rounded-full w-full sm:w-auto max-w-2xl">
                   <TabsTrigger
                     value="letters"
                     className="rounded-full px-4 sm:px-6 py-2 font-bold text-sm sm:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground flex-1 sm:flex-initial"
@@ -120,6 +121,12 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
                   >
                     Quiz Prep
                   </TabsTrigger>
+                  <TabsTrigger
+                    value="writing"
+                    className="rounded-full px-4 sm:px-6 py-2 font-bold text-sm sm:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground flex-1 sm:flex-initial"
+                  >
+                    Writing
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
@@ -129,6 +136,12 @@ export function ArabicSection({ onBack }: ArabicSectionProps) {
 
               <TabsContent value="prep" className="mt-0 w-full">
                 <QuizPrep />
+              </TabsContent>
+
+              <TabsContent value="writing" className="mt-0 w-full">
+                <div className="h-[calc(100vh-16rem)] min-h-[500px]">
+                  <WritingCanvas />
+                </div>
               </TabsContent>
             </Tabs>
           </>
